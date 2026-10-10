@@ -1,0 +1,24 @@
+# Karigar Allotment test data
+module: karigar_allotment
+data_version: 1
+
+test_cases:
+  - id: TC_KA_001
+    description: "Assign order to karigar"
+    order_no: "ORD001"
+    assign_to: "karigar"
+    assign_name: "Thirumala"
+    due_date: "15-07-2026"
+    action: "assign"
+    expected:
+      status: pass
+
+  - id: TC_KA_002
+    description: "Assign order to employee"
+    order_no: "ORD002"
+    assign_to: "employee"
+    assign_name: "Admin"
+    due_date: "20-07-2026"
+    action: "assign"
+    expected:
+      status: pass

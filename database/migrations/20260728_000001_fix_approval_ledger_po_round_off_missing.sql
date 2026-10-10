@@ -1,0 +1,29 @@
+-- Migration: Fold PO round-off into Supplier Approval Ledger (approval-stock purchases)
+-- Date: 28-07-2026
+-- Issue: Supplier Approval Ledger showed the raw SUM(item_cost) for approval-stock purchases
+--        (GRN Entry grn_type=2 / is_suspense_stock=1), never applying the invoice round-off,
+--        so it mismatched the Purchase Invoice print copy and the purchase entry form's
+--        "Final Price" whenever a round-off was applied.
+--        Example: PO 994 (PA-00001) — item total 6,501.36, Round Off -0.36, Final Price
+--        6,501.00 (print copy). Ledger showed 6,501.36 (missing the round-off entirely).
+--        This is the same class of bug already fixed for the *regular* Supplier Ledger's
+--        PO section in 20260720_000001_fix_supplier_ledger_missing_round_off.sql, but that
+--        fix only touched ret_view_supplier_ledger.sql (grn_type NOT IN (2,4)) — the
+--        Approval Ledger's own PO section (ret_view_supplier_approval_ledger.sql,
+--        grn_type = 2) was never given the same treatment.
+--        Verified against source1: 49 of 238 approval-stock POs had a sub-rupee gap between
+--        tot_purchase_amt and SUM(item_cost); after this fix all but 10 unrelated pre-existing
+--        anomalies (gaps of Rs.100s-900s, not rounding) reconcile exactly.
+-- Fix: Apply the identical `radj` round-off-delta join used in ret_view_supplier_ledger.sql
+--      to ret_view_supplier_approval_ledger.sql's PO (grn_type=2) section — folds
+--      (tot_purchase_amt - SUM(item_cost) + tds_tax_value - tcs_tax_value) into the last
+--      item row of each PO, guarded to ABS(gap) < 1 so it never masks unrelated data issues.
+--
+-- NOTE: View definitions are managed in database/views/*.sql (canonical files).
+--       The migration runner applies them automatically after schema migrations.
+
+-- UP
+
+-- Views are applied automatically from database/views/ by run-migrations.sh Phase 2.
+-- Changed files:
+--   database/views/ret_view_supplier_approval_ledger.sql

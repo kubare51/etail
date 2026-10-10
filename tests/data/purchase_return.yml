@@ -1,0 +1,38 @@
+# Purchase Return test data
+module: purchase_return
+data_version: 1
+
+test_cases:
+  - id: TC_PR_001
+    description: "Return via PO RefNO"
+    select_type: "Return"
+    stock_type: "Normal Stock"
+    receipt_type: "PO RefNO"
+    filter_supplier: "Thirumala"
+    issue_supplier: "Thirumala"
+    convert_to: "Supplier"
+    return_reason: "Damage"
+    po_ref_no: "PO001"
+    pcs: "1"
+    gwt: "10.500"
+    wastage: "2"
+    mc: "50"
+    mc_type: "Per Gram"
+    touch: "92"
+    rate: "6500"
+    discount: ""
+    round_off: ""
+    narration: "Automation return test"
+    expected:
+      status: pass
+
+  - id: TC_PR_002
+    description: "Return via Tag code"
+    select_type: "Return"
+    stock_type: "Normal Stock"
+    receipt_type: "Tag"
+    filter_supplier: "Thirumala"
+    issue_supplier: "Thirumala"
+    tag_code: "TAG001"
+    expected:
+      status: pass

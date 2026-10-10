@@ -1,0 +1,30 @@
+# Login test data
+module: login
+data_version: 1
+
+test_cases:
+  - id: TC_LOGIN_001
+    description: "Valid admin login"
+    url_suffix: "login"
+    username: "admin"
+    password: "admin123"
+    expected:
+      status: pass
+      landing_page: Dashboard
+
+  - id: TC_LOGIN_002
+    description: "Invalid password"
+    url_suffix: "login"
+    username: "admin"
+    password: "wrongpassword"
+    expected:
+      status: fail
+      error_contains: "Invalid"
+
+  - id: TC_LOGIN_003
+    description: "Empty credentials"
+    url_suffix: "login"
+    username: ""
+    password: ""
+    expected:
+      status: fail

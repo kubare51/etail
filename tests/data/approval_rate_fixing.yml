@@ -1,0 +1,19 @@
+# Approval Rate Fixing test data
+module: approval_rate_fixing
+data_version: 1
+
+test_cases:
+  - id: TC_ARF_001
+    description: "Standard rate fix entry"
+    scenario: "standard"
+    karigar: "Thirumala"
+    approval_ref: "ARF001"
+    fix_wt: "10.000"
+    rate: "6500"
+    gst_pct: 3
+    remark: "Automation rate fix"
+    expected:
+      status: pass
+      taxable: 65000.00
+      tax: 1950.00
+      payable: 66950.00

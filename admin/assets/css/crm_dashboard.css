@@ -1,0 +1,590 @@
+/* ============================================================
+   CRM Dashboard — Clean Professional Theme
+   Scoped under #crm.crm-modern
+   
+   Design philosophy: 
+   - Subtle refinement, NOT flashy redesign
+   - 50+ year old management-friendly
+   - Better readability, spacing, and clarity
+   - Soft color accents, no bright gradients
+   - Everything stays where it is — just polished
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* --- CSS Variables --- */
+#crm.crm-modern {
+    --crm-bg: #f4f6f9;
+    --crm-card-bg: #ffffff;
+    --crm-card-border: #dee2e6;
+    --crm-card-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --crm-card-hover-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    --crm-text-dark: #2d3748;
+    --crm-text-body: #4a5568;
+    --crm-text-muted: #718096;
+    --crm-divider: #e8ecf1;
+    --crm-hover-bg: #f7fafc;
+    --crm-pink: #d63384;
+    --crm-green: #198754;
+    --crm-teal: #0dcaf0;
+    --crm-blue: #0d6efd;
+    --crm-orange: #fd7e14;
+    --crm-red: #dc3545;
+    --crm-purple: #6f42c1;
+    --crm-radius: 8px;
+    --crm-transition: all 0.2s ease;
+
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    background: var(--crm-bg) !important;
+    padding: 16px !important;
+}
+
+/* Apply font to children but NOT icon fonts */
+#crm.crm-modern *:not(.fa):not(.ion):not(.glyphicon):not([class*="icon"]) {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+/* Preserve FontAwesome / Ionicons / Glyphicons */
+#crm.crm-modern .fa,
+#crm.crm-modern .fa::before,
+#crm.crm-modern [class*="fa-"],
+#crm.crm-modern [class*="fa-"]::before {
+    font-family: FontAwesome !important;
+}
+#crm.crm-modern .ion,
+#crm.crm-modern .ion::before,
+#crm.crm-modern [class*="ion-"],
+#crm.crm-modern [class*="ion-"]::before {
+    font-family: "Ionicons" !important;
+}
+#crm.crm-modern .glyphicon,
+#crm.crm-modern .glyphicon::before {
+    font-family: 'Glyphicons Halflings' !important;
+}
+
+/* ============================
+   BOX / CARD — Subtle clean cards
+   ============================ */
+#crm.crm-modern .box {
+    background: var(--crm-card-bg) !important;
+    border: 1px solid var(--crm-card-border) !important;
+    border-radius: var(--crm-radius) !important;
+    box-shadow: var(--crm-card-shadow) !important;
+    margin-bottom: 14px !important;
+    transition: var(--crm-transition);
+    border-top: none !important;
+}
+
+#crm.crm-modern .box:hover {
+    box-shadow: var(--crm-card-hover-shadow) !important;
+}
+
+#crm.crm-modern .box .box-header {
+    background: var(--crm-hover-bg) !important;
+    border-bottom: 1px solid var(--crm-divider) !important;
+    padding: 12px 16px !important;
+    border-radius: var(--crm-radius) var(--crm-radius) 0 0 !important;
+}
+
+#crm.crm-modern .box .box-header .box-title {
+    color: var(--crm-text-dark) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+}
+
+#crm.crm-modern .box .box-body {
+    padding: 12px 16px !important;
+    overflow-x: auto;
+}
+
+/* Thin colored top-border on boxes (subtle accent) */
+#crm.crm-modern .box.box-primary {
+    border-top: 3px solid var(--crm-blue) !important;
+}
+#crm.crm-modern .box.box-success {
+    border-top: 3px solid var(--crm-green) !important;
+}
+#crm.crm-modern .box.box-info {
+    border-top: 3px solid var(--crm-teal) !important;
+}
+#crm.crm-modern .box.box-warning {
+    border-top: 3px solid var(--crm-orange) !important;
+}
+#crm.crm-modern .box.box-danger {
+    border-top: 3px solid var(--crm-red) !important;
+}
+#crm.crm-modern .box.box-solid {
+    border-top: 3px solid var(--crm-purple) !important;
+}
+
+/* ============================
+   INFO-BOX — Clean, professional cards
+   Keep the original AdminLTE layout but refine
+   ============================ */
+#crm.crm-modern .info-box {
+    background: var(--crm-card-bg) !important;
+    border: 1px solid var(--crm-card-border) !important;
+    border-radius: var(--crm-radius) !important;
+    box-shadow: var(--crm-card-shadow) !important;
+    min-height: auto !important;
+    margin-bottom: 14px !important;
+    transition: var(--crm-transition);
+    overflow: hidden;
+}
+
+#crm.crm-modern .info-box:hover {
+    box-shadow: var(--crm-card-hover-shadow) !important;
+}
+
+/* Icon area — keep colored but softer, no gradient */
+#crm.crm-modern .info-box .info-box-icon {
+    width: 75px !important;
+    min-height: 75px;
+    line-height: 75px !important;
+    font-size: 28px !important;
+    border-radius: var(--crm-radius) 0 0 var(--crm-radius) !important;
+}
+
+/* Ensure icons render properly */
+#crm.crm-modern .info-box .info-box-icon i,
+#crm.crm-modern .info-box .info-box-icon i::before {
+    font-family: FontAwesome !important;
+    color: #fff !important;
+}
+
+#crm.crm-modern .info-box .info-box-content {
+    padding: 10px 14px !important;
+}
+
+#crm.crm-modern .info-box .info-box-text {
+    color: var(--crm-text-dark) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    text-transform: none !important;
+}
+
+#crm.crm-modern .info-box .info-box-number {
+    color: var(--crm-text-dark) !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+}
+
+/* --- Soften the bright bg-* colors on info-boxes --- */
+/* White card body, keep icon area colored but muted */
+#crm.crm-modern .info-box.bg-pink {
+    background: var(--crm-card-bg) !important;
+    border-color: var(--crm-card-border) !important;
+}
+#crm.crm-modern .info-box.bg-pink .info-box-icon {
+    background: var(--crm-pink) !important;
+}
+#crm.crm-modern .info-box.bg-pink .info-box-text,
+#crm.crm-modern .info-box.bg-pink .info-box-number {
+    color: var(--crm-text-dark) !important;
+}
+
+#crm.crm-modern .info-box.bg-green {
+    background: var(--crm-card-bg) !important;
+    border-color: var(--crm-card-border) !important;
+}
+#crm.crm-modern .info-box.bg-green .info-box-icon {
+    background: var(--crm-green) !important;
+}
+#crm.crm-modern .info-box.bg-green .info-box-text,
+#crm.crm-modern .info-box.bg-green .info-box-number {
+    color: var(--crm-text-dark) !important;
+}
+
+#crm.crm-modern .info-box.bg-aqua {
+    background: var(--crm-card-bg) !important;
+    border-color: var(--crm-card-border) !important;
+}
+#crm.crm-modern .info-box.bg-aqua .info-box-icon {
+    background: #17a2b8 !important;
+}
+#crm.crm-modern .info-box.bg-aqua .info-box-text,
+#crm.crm-modern .info-box.bg-aqua .info-box-number {
+    color: var(--crm-text-dark) !important;
+}
+
+#crm.crm-modern .info-box.bg-yellow {
+    background: var(--crm-card-bg) !important;
+    border-color: var(--crm-card-border) !important;
+}
+#crm.crm-modern .info-box.bg-yellow .info-box-icon {
+    background: var(--crm-orange) !important;
+}
+#crm.crm-modern .info-box.bg-yellow .info-box-text,
+#crm.crm-modern .info-box.bg-yellow .info-box-number {
+    color: var(--crm-text-dark) !important;
+}
+
+#crm.crm-modern .info-box.bg-blue {
+    background: var(--crm-card-bg) !important;
+    border-color: var(--crm-card-border) !important;
+}
+#crm.crm-modern .info-box.bg-blue .info-box-icon {
+    background: var(--crm-blue) !important;
+}
+#crm.crm-modern .info-box.bg-blue .info-box-text,
+#crm.crm-modern .info-box.bg-blue .info-box-number {
+    color: var(--crm-text-dark) !important;
+}
+
+#crm.crm-modern .info-box.bg-red {
+    background: var(--crm-card-bg) !important;
+    border-color: var(--crm-card-border) !important;
+}
+#crm.crm-modern .info-box.bg-red .info-box-icon {
+    background: var(--crm-red) !important;
+}
+#crm.crm-modern .info-box.bg-red .info-box-text,
+#crm.crm-modern .info-box.bg-red .info-box-number {
+    color: var(--crm-text-dark) !important;
+}
+
+/* Lime Collection App info-box */
+#crm.crm-modern .info-box[style*="background-color:#cddc39"],
+#crm.crm-modern .info-box[style*="background-color: #cddc39"] {
+    background: var(--crm-card-bg) !important;
+    border: 1px solid var(--crm-card-border) !important;
+    border-radius: var(--crm-radius) !important;
+    box-shadow: var(--crm-card-shadow) !important;
+}
+
+/* ============================
+   TABLES — Cleaner, more readable
+   ============================ */
+#crm.crm-modern .table {
+    color: var(--crm-text-body) !important;
+    margin-bottom: 0 !important;
+    background: transparent !important;
+}
+
+#crm.crm-modern .table > thead > tr > th,
+#crm.crm-modern .table > thead > tr > td {
+    color: var(--crm-text-muted) !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid var(--crm-divider) !important;
+    padding: 8px 10px !important;
+    background: transparent !important;
+    white-space: nowrap;
+}
+
+#crm.crm-modern .table > tbody > tr > td,
+#crm.crm-modern .table > tbody > tr > th,
+#crm.crm-modern .table > tr > td,
+#crm.crm-modern .table > tr > th {
+    color: var(--crm-text-body) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    border-top: 1px solid var(--crm-divider) !important;
+    padding: 8px 10px !important;
+    background: transparent !important;
+    vertical-align: middle !important;
+}
+
+#crm.crm-modern .table > tbody > tr:hover > td,
+#crm.crm-modern .table > tr:hover > td {
+    background: var(--crm-hover-bg) !important;
+}
+
+#crm.crm-modern .table > tfoot > tr > td {
+    color: var(--crm-text-dark) !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    border-top: 2px solid var(--crm-divider) !important;
+    padding: 8px 10px !important;
+    background: var(--crm-hover-bg) !important;
+}
+
+#crm.crm-modern .table-bordered {
+    border: 1px solid var(--crm-card-border) !important;
+}
+
+#crm.crm-modern .table-bordered > thead > tr > th,
+#crm.crm-modern .table-bordered > tbody > tr > td {
+    border: 1px solid var(--crm-divider) !important;
+}
+
+/* ============================
+   BADGES — Cleaner, softer pills
+   ============================ */
+#crm.crm-modern .badge {
+    padding: 3px 10px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    min-width: 26px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Softer badge colors — no gradients */
+#crm.crm-modern .badge.bg-pink,
+#crm.crm-modern .badge.bg-maroon {
+    background: var(--crm-pink) !important;
+    color: #fff !important;
+}
+#crm.crm-modern .badge.bg-green {
+    background: var(--crm-green) !important;
+    color: #fff !important;
+}
+#crm.crm-modern .badge.bg-aqua {
+    background: #17a2b8 !important;
+    color: #fff !important;
+}
+#crm.crm-modern .badge.bg-orange {
+    background: var(--crm-orange) !important;
+    color: #fff !important;
+}
+#crm.crm-modern .badge.bg-red {
+    background: var(--crm-red) !important;
+    color: #fff !important;
+}
+#crm.crm-modern .badge.bg-blue {
+    background: var(--crm-blue) !important;
+    color: #fff !important;
+}
+
+/* ============================
+   LABELS
+   ============================ */
+#crm.crm-modern .label {
+    padding: 4px 12px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+}
+
+#crm.crm-modern .label.bg-green {
+    background: var(--crm-green) !important;
+    color: #fff !important;
+}
+#crm.crm-modern .label.bg-aqua {
+    background: #17a2b8 !important;
+    color: #fff !important;
+}
+#crm.crm-modern .label.bg-blue {
+    background: var(--crm-blue) !important;
+    color: #fff !important;
+}
+#crm.crm-modern .label.bg-orange {
+    background: var(--crm-orange) !important;
+    color: #fff !important;
+}
+
+/* ============================
+   LINKS — Professional blue
+   ============================ */
+#crm.crm-modern a {
+    color: var(--crm-blue) !important;
+    text-decoration: none !important;
+}
+#crm.crm-modern a:hover {
+    color: #0b5ed7 !important;
+    text-decoration: underline !important;
+}
+
+/* ============================
+   HEADINGS
+   ============================ */
+#crm.crm-modern h3 {
+    color: var(--crm-text-dark) !important;
+    font-weight: 700 !important;
+}
+#crm.crm-modern h4 {
+    color: var(--crm-text-dark) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+}
+#crm.crm-modern h5 {
+    color: var(--crm-text-muted) !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ============================
+   COLLECTION SUMMARY TABLE
+   ============================ */
+#crm.crm-modern #collSummary thead tr th {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 10px 12px !important;
+    border: none !important;
+    color: #fff !important;
+}
+
+/* Keep the existing colored headers — they're useful for scanning */
+#crm.crm-modern #collSummary thead tr th.bg-purple {
+    background: var(--crm-purple) !important;
+}
+#crm.crm-modern #collSummary thead tr th.bg-green {
+    background: var(--crm-green) !important;
+}
+#crm.crm-modern #collSummary thead tr th.bg-orange {
+    background: var(--crm-orange) !important;
+}
+#crm.crm-modern #collSummary thead tr th.bg-blue {
+    background: var(--crm-blue) !important;
+}
+#crm.crm-modern #collSummary thead tr th.bg-red {
+    background: var(--crm-red) !important;
+}
+
+/* Alternating rows for easy scanning */
+#crm.crm-modern #collSummary tbody tr:nth-child(even) td {
+    background: var(--crm-hover-bg) !important;
+}
+
+/* ============================
+   PROGRESS BARS
+   ============================ */
+#crm.crm-modern .progress {
+    background: #e9ecef !important;
+    border-radius: 6px !important;
+    height: 6px !important;
+}
+#crm.crm-modern .progress .progress-bar {
+    background: var(--crm-blue) !important;
+    border-radius: 6px !important;
+}
+
+/* ============================
+   DATATABLES
+   ============================ */
+#crm.crm-modern .dataTables_wrapper .dataTables_info,
+#crm.crm-modern .dataTables_wrapper .dataTables_length label,
+#crm.crm-modern .dataTables_wrapper .dataTables_filter label {
+    color: var(--crm-text-muted) !important;
+    font-size: 12px !important;
+}
+
+#crm.crm-modern .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--crm-text-body) !important;
+    border-radius: 4px !important;
+}
+#crm.crm-modern .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--crm-blue) !important;
+    color: #fff !important;
+    border-color: var(--crm-blue) !important;
+}
+
+/* ============================
+   OVERLAY SPINNER
+   ============================ */
+#crm.crm-modern .overlay {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border-radius: var(--crm-radius) !important;
+}
+#crm.crm-modern .overlay i {
+    color: var(--crm-blue) !important;
+}
+#crm.crm-modern .overlay i.fa,
+#crm.crm-modern .overlay i.fa::before {
+    font-family: FontAwesome !important;
+}
+
+/* ============================
+   SPACING & GRID
+   ============================ */
+#crm.crm-modern > .row.crm {
+    margin: 0 -8px !important;
+}
+#crm.crm-modern > .row.crm > [class*="col-"] {
+    padding: 0 8px !important;
+}
+
+/* Total footer text */
+#crm.crm-modern .total {
+    color: var(--crm-text-dark) !important;
+}
+
+/* Renewal red text */
+#crm.crm-modern td[style*="color: red"],
+#crm.crm-modern td[style*="color:red"] {
+    color: var(--crm-red) !important;
+    font-weight: 600 !important;
+}
+
+/* hr dividers */
+#crm.crm-modern hr {
+    border-color: var(--crm-divider) !important;
+}
+
+/* Scrollbar — subtle */
+#crm.crm-modern ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+#crm.crm-modern ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+#crm.crm-modern ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+#crm.crm-modern ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive table fix */
+#crm.crm-modern .table-responsive {
+    border: none !important;
+    overflow-x: auto !important;
+}
+
+/* ============================
+   ACCOUNTS CARD TABLE FIX
+   #account_list and #schWise_account_list
+   4 columns in col-md-3 — must fit without scrolling
+   ============================ */
+#crm.crm-modern #account_list,
+#crm.crm-modern #schWise_account_list {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+#crm.crm-modern #account_list thead th,
+#crm.crm-modern #schWise_account_list thead th {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    font-size: 10px !important;
+    padding: 6px 4px !important;
+    line-height: 1.3;
+}
+
+#crm.crm-modern #account_list tbody td,
+#crm.crm-modern #schWise_account_list tbody td,
+#crm.crm-modern #account_list tfoot td,
+#crm.crm-modern #schWise_account_list tfoot td {
+    font-size: 12px !important;
+    padding: 6px 4px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Give amount/weight columns slightly less width */
+#crm.crm-modern #account_list thead th:nth-child(1),
+#crm.crm-modern #schWise_account_list thead th:nth-child(1) {
+    width: 28%;
+}
+#crm.crm-modern #account_list thead th:nth-child(2),
+#crm.crm-modern #schWise_account_list thead th:nth-child(2) {
+    width: 20%;
+}
+#crm.crm-modern #account_list thead th:nth-child(3),
+#crm.crm-modern #schWise_account_list thead th:nth-child(3) {
+    width: 26%;
+}
+#crm.crm-modern #account_list thead th:nth-child(4),
+#crm.crm-modern #schWise_account_list thead th:nth-child(4) {
+    width: 26%;
+}
+

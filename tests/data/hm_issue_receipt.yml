@@ -1,0 +1,23 @@
+# HM Issue/Receipt test data
+module: hm_issue_receipt
+data_version: 1
+
+test_cases:
+  - id: TC_HM_001
+    description: "HM Issue flow"
+    flow_type: "issue"
+    karigar: "Thirumala"
+    po_ref_no: "PO001"
+    expected:
+      status: pass
+
+  - id: TC_HM_002
+    description: "HM Receipt flow"
+    flow_type: "receipt"
+    hm_ref_no: "HM001"
+    vendor_ref: "VRN-AUTO-001"
+    hm_charge: "10"
+    rejected_pcs: "0"
+    rejected_gwt: "0"
+    expected:
+      status: pass

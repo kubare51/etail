@@ -1,0 +1,63 @@
+# Data for restrict_partial_wt_single_pcs (see test_qc_single_pcs_restriction.py)
+#
+# IMPORTANT: the restriction only applies to items whose ret_category.cat_type == 1 (Ornament).
+# single_pcs_po_ref_no / multi_pcs_po_ref_no below must be booked against an Ornament category.
+#
+# single_pcs_po_ref_no: a completed Supplier Bill Entry (Ornament) with exactly
+#   one line item booked as 1 Pc / 100.000 gms, not yet issued to QC.
+# multi_pcs_po_ref_no: a completed Supplier Bill Entry (Ornament) with a line item booked as
+#   5 Pcs / 500.000 gms, not yet issued to QC — used for the "must stay unchanged" regression checks.
+# single_pcs_qc_ref_no / multi_pcs_qc_ref_no: QC Issue slips already raised for the above
+#   (issue_pcs=1/issue_gwt=100.000 and issue_pcs=5/issue_gwt=500.000 respectively), pending receipt.
+# bullion_single_pcs_po_ref_no: a completed Supplier Bill Entry booked against a Bullion
+#   category (cat_type=2) with 1 Pc / 100.000 gms — used to prove the restriction does NOT
+#   apply outside Ornament, even for a literal single piece.
+#
+# These values must be seeded on the target environment before running
+# test_qc_single_pcs_restriction.py — tests skip cleanly (pytest.skip) when a key is absent,
+# matching the convention in qc_issue_receipt.yml.
+module: qc_single_pcs
+data_version: 1
+
+test_cases:
+  - id: TC_QC_SINGLE_001
+    description: "Single-piece (1 Pc / 100.000 g) QC Issue — full-only, no partial weight"
+    flow_type: "issue"
+    single_pcs_po_ref_no: "PO_SINGLE_PCS_001"
+    employee: "Admin"
+    full_pcs: 1
+    full_gwt: 100.000
+    partial_gwt: 50.000
+    expected_message: "Partial weight processing is not allowed for a single-piece item. The complete piece and weight must be processed."
+
+  - id: TC_QC_SINGLE_002
+    description: "Multi-piece (5 Pcs / 500.000 g) QC Issue — partial issue must remain allowed"
+    flow_type: "issue"
+    multi_pcs_po_ref_no: "PO_MULTI_PCS_001"
+    employee: "Admin"
+    partial_pcs: 2
+    partial_gwt: 200.000
+
+  - id: TC_QC_SINGLE_003
+    description: "Single-piece (1 Pc / 100.000 g) QC Receipt — full accept/reject only"
+    flow_type: "receipt"
+    single_pcs_qc_ref_no: "QC_SINGLE_PCS_001"
+    partial_failed_pcs: 0
+    partial_failed_gwt: 50.000
+    full_reject_failed_pcs: 1
+    full_reject_failed_gwt: 100.000
+    expected_message: "Partial weight processing is not allowed for a single-piece item. The complete piece and weight must be processed."
+
+  - id: TC_QC_SINGLE_004
+    description: "Multi-piece (5 Pcs / 500.000 g) QC Receipt — partial rejection must remain allowed"
+    flow_type: "receipt"
+    multi_pcs_qc_ref_no: "QC_MULTI_PCS_001"
+    partial_failed_pcs: 1
+    partial_failed_gwt: 100.000
+
+  - id: TC_QC_SINGLE_005
+    description: "Single-piece (1 Pc / 100.000 g) Bullion (cat_type=2) item — restriction must NOT apply outside Ornament"
+    flow_type: "issue"
+    bullion_single_pcs_po_ref_no: "PO_BULLION_SINGLE_PCS_001"
+    employee: "Admin"
+    partial_gwt: 50.000

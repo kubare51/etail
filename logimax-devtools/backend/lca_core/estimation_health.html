@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCA Report — estimation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.6;padding:2rem}
+.container{max-width:1200px;margin:0 auto}
+.header{text-align:center;padding:2rem 0;border-bottom:1px solid #1e293b;margin-bottom:2rem}
+.header h1{font-size:1.8rem;color:#f1f5f9;margin-bottom:.5rem}
+.header .subtitle{color:#94a3b8;font-size:.9rem}
+.score-card{display:flex;align-items:center;justify-content:center;gap:2rem;padding:2rem;margin:1.5rem 0}
+.score-circle{width:140px;height:140px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid #f97316;background:rgba(249,115,22,0.1)}
+.score-circle .grade{font-size:3rem;font-weight:800;color:#f97316}
+.score-circle .score{font-size:.9rem;color:#94a3b8}
+.score-meta{text-align:left}
+.score-meta .label{font-size:1.1rem;color:#f97316;font-weight:600}
+.score-meta .desc{color:#94a3b8;font-size:.85rem;margin-top:.25rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:1.5rem 0}
+.stat-card{background:#1e293b;border-radius:10px;padding:1.2rem;text-align:center;border:1px solid #334155}
+.stat-card .value{font-size:1.6rem;font-weight:700;color:#f1f5f9}
+.stat-card .label{font-size:.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-top:.3rem}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2rem 0}
+.chart-box{background:#1e293b;border-radius:10px;padding:1.5rem;border:1px solid #334155}
+.chart-box h3{font-size:.9rem;color:#94a3b8;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.05em}
+canvas{max-height:250px}
+.section{background:#1e293b;border-radius:10px;margin:1rem 0;border:1px solid #334155;overflow:hidden}
+.section-header{padding:1rem 1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;transition:background .2s}
+.section-header:hover{background:#334155}
+.section-header h3{font-size:.95rem;color:#f1f5f9}
+.section-header .badge{background:rgba(239,68,68,.15);color:#ef4444;padding:.2rem .6rem;border-radius:20px;font-size:.75rem;font-weight:600}
+.section-header .badge.green{background:rgba(34,197,94,.15);color:#22c55e}
+.section-header .badge.yellow{background:rgba(234,179,8,.15);color:#eab308}
+.section-header .arrow{color:#64748b;transition:transform .2s;font-size:.8rem}
+.section-header.active .arrow{transform:rotate(90deg)}
+.section-body{max-height:0;overflow:hidden;transition:max-height .3s ease-out}
+.section-body.open{max-height:2000px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:.6rem 1rem;color:#94a3b8;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #334155}
+td{padding:.5rem 1rem;border-bottom:1px solid #1e293b;font-size:.85rem}
+tr:hover{background:#0f172a}
+code{background:#0f172a;padding:.15rem .4rem;border-radius:4px;font-size:.8rem;color:#7dd3fc}
+.footer{text-align:center;color:#475569;font-size:.75rem;padding:2rem 0;margin-top:2rem;border-top:1px solid #1e293b}
+@media(max-width:768px){.charts{grid-template-columns:1fr}.score-card{flex-direction:column}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:#fff;color:#333}th{color:#666}td{color:#333}.section-body{max-height:none!important}.chart-box{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Code Health Report</h1>
+<div class="subtitle">Module: <strong>estimation</strong> &middot; Generated: 2026-06-07 11:21</div>
+</div>
+
+<div class="score-card">
+<div class="score-circle">
+<span class="grade">D</span>
+<span class="score">50/100</span>
+</div>
+<div class="score-meta">
+<div class="label">Poor</div>
+<div class="desc">254 functions analyzed<br>498 security findings<br>19 N+1 patterns</div>
+</div>
+</div>
+
+<div class="stats-grid">
+<div class="stat-card"><div class="value">254</div><div class="label">Functions</div></div>
+<div class="stat-card"><div class="value">2</div><div class="label">E/F Rated</div></div>
+<div class="stat-card"><div class="value">4</div><div class="label">Critical Vulns</div></div>
+<div class="stat-card"><div class="value">19</div><div class="label">N+1 Patterns</div></div>
+<div class="stat-card"><div class="value">1</div><div class="label">Hardcoded</div></div>
+<div class="stat-card"><div class="value">444</div><div class="label">Worst CC</div></div>
+</div>
+
+<div class="charts">
+<div class="chart-box">
+<h3>Complexity Distribution</h3>
+<canvas id="ratingChart"></canvas>
+</div>
+<div class="chart-box">
+<h3>Category Scores</h3>
+<canvas id="categoryChart"></canvas>
+</div>
+</div>
+
+<div class='chart-box' style='margin:1rem 0'><h3>Score Trend</h3><canvas id='trendChart'></canvas></div>
+
+<div class="section">
+<div class="section-header" onclick="toggle(this)">
+<h3>Complexity — 254 functions</h3>
+<div style="display:flex;gap:.5rem;align-items:center">
+<span class="badge yellow">2 E/F rated</span>
+<span class="arrow">&#9654;</span>
+</div>
+</div>
+<div class="section-body">
+<table>
+<tr><th>Function</th><th>File</th><th>CC</th><th>LOC</th><th>Rating</th></tr>
+<tr><td><code>estimation</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td><strong>444</strong></td><td>1178</td><td style="color:#dc2626;font-weight:700">F</td></tr>
+<tr><td><code>estimation</code></td><td>admin\application\controllers\admin_ret_estimation_konika.php</td><td><strong>439</strong></td><td>1163</td><td style="color:#dc2626;font-weight:700">F</td></tr>
+<tr><td><code>updateCustomer</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td><strong>20</strong></td><td>40</td><td style="color:#eab308;font-weight:700">C</td></tr>
+<tr><td><code>updateCustomer</code></td><td>admin\application\controllers\admin_ret_estimation_konika.php</td><td><strong>20</strong></td><td>40</td><td style="color:#eab308;font-weight:700">C</td></tr>
+<tr><td><code>createNewCustomer</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td><strong>19</strong></td><td>40</td><td style="color:#eab308;font-weight:700">C</td></tr>
+<tr><td><code>createNewCustomer</code></td><td>admin\application\controllers\admin_ret_estimation_konika.php</td><td><strong>19</strong></td><td>40</td><td style="color:#eab308;font-weight:700">C</td></tr>
+<tr><td><code>ajax_getEstimationList</code></td><td>admin\application\models\ret_estimation_model.php</td><td><strong>16</strong></td><td>61</td><td style="color:#eab308;font-weight:700">C</td></tr>
+<tr><td><code>createNewCustomer</code></td><td>admin\application\models\ret_estimation_model.php</td><td><strong>16</strong></td><td>51</td><td style="color:#84cc16;font-weight:700">B</td></tr>
+<tr><td><code>seed</code></td><td>admin\application\controllers\test_data_gen.php</td><td><strong>15</strong></td><td>41</td><td style="color:#84cc16;font-weight:700">B</td></tr>
+<tr><td><code>getTaggingScanBySearch</code></td><td>admin\application\models\ret_estimation_model.php</td><td><strong>15</strong></td><td>74</td><td style="color:#eab308;font-weight:700">C</td></tr>
+
+</table>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="toggle(this)">
+<h3>Security — 498 findings</h3>
+<div style="display:flex;gap:.5rem;align-items:center">
+<span class="badge">4 critical</span>
+<span class="arrow">&#9654;</span>
+</div>
+</div>
+<div class="section-body">
+<table>
+<tr><th>Rule</th><th>File</th><th>Function</th><th>Line</th><th>Severity</th></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\Test_cash_flow.php</td><td>index</td><td>33</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>set_image</td><td>65</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>set_image</td><td>67</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>estimation</td><td>288</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>estimation</td><td>296</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>estimation</td><td>296</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>estimation</td><td>367</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>estimation</td><td>367</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>estimation</td><td>684</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>?</code></td><td>admin\application\controllers\admin_ret_estimation.php</td><td>estimation</td><td>684</td><td style="color:#ef4444">HIGH</td></tr>
+
+</table>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="toggle(this)">
+<h3>N+1 Queries — 19 patterns</h3>
+<div style="display:flex;gap:.5rem;align-items:center">
+<span class="badge ">14 high</span>
+<span class="arrow">&#9654;</span>
+</div>
+</div>
+<div class="section-body">
+<table>
+<tr><th>Function</th><th>File</th><th>Loop Line</th><th>DB Line</th><th>Severity</th></tr>
+<tr><td><code>index</code></td><td>admin\application\controllers\Test_cash_flow.php</td><td>60</td><td>65</td><td style="color:#eab308">MEDIUM</td></tr>
+<tr><td><code>index</code></td><td>admin\application\controllers\Test_cash_flow.php</td><td>60</td><td>68</td><td style="color:#eab308">MEDIUM</td></tr>
+<tr><td><code>index</code></td><td>admin\application\controllers\Test_cash_flow.php</td><td>95</td><td>99</td><td style="color:#eab308">MEDIUM</td></tr>
+<tr><td><code>index</code></td><td>admin\application\controllers\Test_cash_flow.php</td><td>95</td><td>100</td><td style="color:#eab308">MEDIUM</td></tr>
+<tr><td><code>isolation</code></td><td>admin\application\controllers\Test_cash_flow.php</td><td>197</td><td>199</td><td style="color:#eab308">MEDIUM</td></tr>
+<tr><td><code>cleanup</code></td><td>admin\application\controllers\test_data_gen.php</td><td>135</td><td>139</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>cleanup</code></td><td>admin\application\controllers\test_data_gen.php</td><td>135</td><td>140</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>_seed_customers</code></td><td>admin\application\controllers\test_data_gen.php</td><td>169</td><td>188</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>_seed_products</code></td><td>admin\application\controllers\test_data_gen.php</td><td>211</td><td>232</td><td style="color:#ef4444">HIGH</td></tr>
+<tr><td><code>_seed_estimations</code></td><td>admin\application\controllers\test_data_gen.php</td><td>256</td><td>276</td><td style="color:#ef4444">HIGH</td></tr>
+
+</table>
+</div>
+</div>
+
+<div class="section">
+<div class="section-header" onclick="toggle(this)">
+<h3>Hardcoded Values — 1 findings</h3>
+<div style="display:flex;gap:.5rem;align-items:center">
+<span class="badge yellow">1</span>
+<span class="arrow">&#9654;</span>
+</div>
+</div>
+<div class="section-body">
+<table>
+<tr><th>Rule</th><th>File</th><th>Function</th><th>Line</th><th>Match</th></tr>
+<tr><td><code>?</code></td><td>admin\application\models\ret_estimation_model.php</td><td>get_credit_pending_details</td><td>2735</td><td><code>!=12</code></td></tr>
+
+</table>
+</div>
+</div>
+
+<div class="footer">
+Generated by Logimax Code Analysis (LCA) Suite &middot; 2026-06-07 11:21
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+function toggle(el){
+el.classList.toggle('active');
+el.nextElementSibling.classList.toggle('open');
+}
+
+// Rating donut
+new Chart(document.getElementById('ratingChart'),{
+type:'doughnut',
+data:{
+labels:["A", "B", "C", "D", "E", "F"],
+datasets:[{data:[226, 14, 12, 0, 0, 2],backgroundColor:["#22c55e", "#84cc16", "#eab308", "#f97316", "#ef4444", "#dc2626"],borderWidth:0}]
+},
+options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:12}}}}}
+});
+
+// Category bars
+new Chart(document.getElementById('categoryChart'),{
+type:'bar',
+data:{
+labels:["Complexity", "Security", "N+1 Queries", "Hardcoded"],
+datasets:[{data:[94, 0, 58, 98],backgroundColor:['#3b82f6','#ef4444','#f97316','#eab308'],borderRadius:6,borderWidth:0}]
+},
+options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{max:100,grid:{color:'#1e293b'},ticks:{color:'#94a3b8'}},y:{grid:{display:false},ticks:{color:'#e2e8f0'}}}}
+});
+
+// Trend line
+var trendEl=document.getElementById("trendChart");if(trendEl){new Chart(trendEl,{type:"line",data:{labels:["2026-06-07", "2026-06-07"],datasets:[{data:[100, 50],borderColor:"#f97316",backgroundColor:"rgba(59,130,246,0.1)",fill:true,tension:0.3,pointRadius:4,pointBackgroundColor:"#f97316"}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,grid:{color:"#1e293b"},ticks:{color:"#94a3b8"}},x:{grid:{display:false},ticks:{color:"#94a3b8"}}}}});}
+</script>
+</body>
+</html>

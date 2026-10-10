@@ -1,0 +1,32 @@
+# Approval To Invoice test data
+module: approval_to_invoice
+data_version: 1
+
+test_cases:
+  - id: TC_ATI_001
+    description: "Pure to Amount conversion"
+    opening_bal: "no"
+    rate_cut_type: "pure to amount"
+    convert_to: "supplier"
+    conv_type: "fix"
+    supplier: "Thirumala"
+    ref_no: "PO001"
+    metal: "Gold"
+    category: "Necklace"
+    product: "Ring"
+    pure_weight: "5.000"
+    rate: "6500"
+    remark: "Automation pure to amount"
+    expected:
+      status: pass
+
+  - id: TC_ATI_002
+    description: "Amount conversion"
+    opening_bal: "no"
+    rate_cut_type: "amount"
+    convert_to: "supplier"
+    supplier: "Thirumala"
+    amount: "50000"
+    remark: "Automation amount conversion"
+    expected:
+      status: pass

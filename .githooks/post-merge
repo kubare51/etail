@@ -1,0 +1,61 @@
+#!/bin/sh
+# =========================================================
+#  Git Post-Merge Hook — Auto-setup + LCA reindex after pull
+#  Controlled by .githooks/config → POST_MERGE=on|off
+# =========================================================
+
+# ── Config check ──────────────────────────────
+HOOKS_DIR="$(cd "$(dirname "$0")" && pwd)"
+CONFIG_FILE="$HOOKS_DIR/config"
+
+if [ -f "$CONFIG_FILE" ]; then
+    ENABLED=$(grep -E '^POST_MERGE=' "$CONFIG_FILE" | cut -d= -f2 | tr -d ' \r')
+    if [ "$ENABLED" != "on" ]; then
+        exit 0
+    fi
+fi
+
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+# ── Auto-setup hooks on first pull ────────────────────────
+# If the dev hasn't set core.hooksPath yet, set it now
+CURRENT_HOOKS=$(git config core.hooksPath 2>/dev/null || echo "")
+if [ "$CURRENT_HOOKS" != ".githooks" ]; then
+    git config core.hooksPath .githooks
+    echo "[hooks] Auto-configured: git hooks now loaded from .githooks/"
+fi
+
+# ── LCA incremental reindex (optional) ───────────────────
+LCA_DIR="$REPO_ROOT/logimax-devtools/backend/lca_core"
+
+if [ ! -d "$LCA_DIR" ]; then
+    exit 0
+fi
+
+export PYTHONIOENCODING=utf-8
+
+# Check if any PHP or JS files were changed in this merge
+CHANGED_PHP=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD -- "admin/application/" 2>/dev/null | head -1)
+CHANGED_JS=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD -- "admin/assets/js/" 2>/dev/null | head -1)
+
+if [ -z "$CHANGED_PHP" ] && [ -z "$CHANGED_JS" ]; then
+    echo "[LCA] No PHP/JS changes — index is current."
+    exit 0
+fi
+
+echo "[LCA] Incremental reindex starting (background)..."
+
+# Run reindex in background (non-blocking)
+(
+    cd "$LCA_DIR" || exit 1
+    if command -v uv &> /dev/null; then
+        uv run lca update master_index.json \
+            --repo "$REPO_ROOT" \
+            --since ORIG_HEAD \
+            2>/dev/null
+    fi
+    echo "[LCA] Incremental reindex complete!"
+) &
+
+exit 0

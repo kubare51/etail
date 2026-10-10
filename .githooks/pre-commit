@@ -1,0 +1,80 @@
+#!/bin/sh
+# ============================================
+# Pre-commit Hook for eTail v3
+# ============================================
+# Checks: PHP syntax, Python syntax
+# Controlled by .githooks/config → PRE_COMMIT=on|off
+# ============================================
+
+# ── Config check ─────────────────────────────
+HOOKS_DIR="$(cd "$(dirname "$0")" && pwd)"
+CONFIG_FILE="$HOOKS_DIR/config"
+
+if [ -f "$CONFIG_FILE" ]; then
+    ENABLED=$(grep -E '^PRE_COMMIT=' "$CONFIG_FILE" | cut -d= -f2 | tr -d ' \r')
+    if [ "$ENABLED" != "on" ]; then
+        exit 0
+    fi
+fi
+
+# ── Hook logic ───────────────────────────────
+
+# Check if PowerShell is available (Windows)
+if command -v powershell.exe &> /dev/null; then
+    powershell.exe -ExecutionPolicy Bypass -File "$HOOKS_DIR/pre-commit.ps1"
+    exit $?
+fi
+
+# Fallback to bash for Git Bash / WSL / Linux
+echo ""
+echo "Running pre-commit checks..."
+echo ""
+
+STAGED_PHP=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' || true)
+STAGED_PY=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$' || true)
+
+EXIT_CODE=0
+
+# PHP syntax check
+if [ -n "$STAGED_PHP" ]; then
+    echo "PHP files staged: $(echo "$STAGED_PHP" | wc -l | tr -d ' ')"
+    echo "  Checking PHP syntax..."
+    for file in $STAGED_PHP; do
+        if [ -f "$file" ]; then
+            php -l "$file" > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo "  ❌ Syntax error: $file"
+                EXIT_CODE=1
+            fi
+        fi
+    done
+    echo ""
+fi
+
+# Python syntax check
+if [ -n "$STAGED_PY" ]; then
+    echo "Python files staged: $(echo "$STAGED_PY" | wc -l | tr -d ' ')"
+    echo "  Checking Python syntax..."
+    for file in $STAGED_PY; do
+        if [ -f "$file" ]; then
+            python -m py_compile "$file" 2>&1
+            if [ $? -ne 0 ]; then
+                echo "  ❌ Syntax error: $file"
+                EXIT_CODE=1
+            fi
+        fi
+    done
+    echo ""
+fi
+
+# Result
+echo ""
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "All pre-commit checks passed!"
+else
+    echo "❌ Pre-commit checks failed. Fix issues before committing."
+    echo ""
+    echo "To bypass (not recommended): git commit --no-verify"
+fi
+
+exit $EXIT_CODE

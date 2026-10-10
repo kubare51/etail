@@ -1,0 +1,57 @@
+# Customer Order test data
+module: customer_order
+data_version: 1
+
+test_cases:
+  - id: TC_CO_001
+    description: "Tag Reserve order"
+    customer_number: "9876543210"
+    branch: "Main Branch"
+    employee: "Admin"
+    balance_type: "Cash Balance"
+    order_type: "Tag Reserve"
+    rate_type: "Delivery Rate(Live)"
+    tag_scan: "TAG001"
+    expected:
+      status: pass
+
+  - id: TC_CO_002
+    description: "Customized Order — single item"
+    customer_number: "9876543210"
+    branch: "Main Branch"
+    employee: "Admin"
+    balance_type: "Cash Balance"
+    order_type: "Customized Order"
+    rate_type: "Delivery Rate(Live)"
+    product: "Ring"
+    design: "Kerala"
+    sub_design: "LK Ring"
+    purity: "91.6000"
+    gross_wt: "5.200"
+    pcs: "1"
+    wastage: "8"
+    mc_type: "Gram"
+    mc_value: "250"
+    description: "Automation test — customized order"
+    expected:
+      status: pass
+
+  - id: TC_CO_003
+    description: "Customized Order — Order Rate (Fixed)"
+    customer_number: "9876543210"
+    branch: "Main Branch"
+    employee: "Admin"
+    balance_type: "Metal Balance"
+    order_type: "Customized Order"
+    rate_type: "Order Rate(Fixed)"
+    product: "Necklace"
+    design: "Kerala"
+    sub_design: "LK Necklace"
+    purity: "91.6000"
+    gross_wt: "15.000"
+    pcs: "1"
+    wastage: "6"
+    mc_type: "Piece"
+    mc_value: "5000"
+    expected:
+      status: pass

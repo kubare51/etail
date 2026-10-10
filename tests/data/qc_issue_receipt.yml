@@ -1,0 +1,22 @@
+# QC Issue/Receipt test data
+module: qc_issue_receipt
+data_version: 1
+
+test_cases:
+  - id: TC_QC_001
+    description: "QC Issue flow"
+    flow_type: "issue"
+    po_ref_no: "PO001"
+    employee: "Admin"
+    expected:
+      status: pass
+
+  - id: TC_QC_002
+    description: "QC Receipt flow"
+    flow_type: "receipt"
+    qc_ref_no: "QC001"
+    rejected_pcs: "0"
+    rejected_gwt: "0"
+    rejected_lwt: "0"
+    expected:
+      status: pass

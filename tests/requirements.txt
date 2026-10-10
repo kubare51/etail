@@ -1,0 +1,11 @@
+playwright==1.49.1
+pytest==8.3.4
+pytest-playwright==0.6.2
+pytest-xdist==3.5.0
+pytest-html==4.1.1
+pytest-timeout==2.3.1
+allure-pytest==2.13.5
+pyyaml==6.0.2
+openpyxl==3.1.5
+mysql-connector-python==9.1.0
+python-dotenv==1.0.1

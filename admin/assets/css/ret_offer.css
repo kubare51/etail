@@ -1,0 +1,466 @@
+/* ============================================
+   Offer Module — Enhanced AdminLTE Styles
+   Clean polish without breaking the framework
+   ============================================ */
+
+/* ------ Form Controls — Focus & Hover ------ */
+#offer_master_form .form-control {
+  border-radius: 3px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#offer_master_form .form-control:focus {
+  border-color: #3c8dbc;
+  box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.15);
+}
+
+#offer_master_form .form-control:hover:not(:focus):not(:disabled) {
+  border-color: #aaa;
+}
+
+/* ------ Labels — Slightly better typography ------ */
+#offer_master_form label {
+  font-weight: 600;
+  font-size: 12.5px;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+/* ------ Input Group Addons — Colored ------ */
+#offer_master_form .input-group-addon {
+  font-weight: 600;
+  min-width: 38px;
+  text-align: center;
+}
+
+/* ------ Discount Panels — Subtle polish ------ */
+#offer_master_form .panel {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  transition: box-shadow 0.2s ease;
+}
+
+#offer_master_form .panel:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+#offer_master_form .panel-heading {
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0.3px;
+}
+
+#offer_master_form .panel-heading i {
+  margin-right: 6px;
+}
+
+/* ------ Radio Labels — Cleaner look ------ */
+#offer_master_form .radio-inline {
+  padding-left: 22px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+#offer_master_form .radio-inline input[type="radio"] {
+  margin-top: 3px;
+}
+
+/* ------ Disabled Field Look ------ */
+.offer-field-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+/* ------ Save / Cancel Buttons ------ */
+#btn_save {
+  padding: 8px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+#btn_save:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(60, 141, 188, 0.35);
+}
+
+#btn_save:active {
+  transform: translateY(0);
+}
+
+#offer_master_form .btn-default {
+  padding: 8px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-radius: 3px;
+  margin-left: 8px;
+  transition: all 0.2s ease;
+}
+
+#offer_master_form .btn-default:hover {
+  background-color: #e8e8e8;
+}
+
+/* ------ Dashed Dividers ------ */
+#offer_master_form hr {
+  border-top: 1px dashed #ddd;
+  margin: 12px 0 18px;
+}
+
+/* ------ Box Title ------ */
+.box-primary > .box-header .box-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.box-primary > .box-header .box-title i {
+  margin-right: 6px;
+}
+
+/* ------ Select Dropdown ------ */
+#offer_master_form select.form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 10px center;
+  padding-right: 28px;
+  cursor: pointer;
+}
+
+/* ------ Required Field Star ------ */
+#offer_master_form .text-red {
+  font-weight: 700;
+}
+
+/* ------ Number Input — Hide spinners for cleaner look ------ */
+#offer_master_form input[type="number"]::-webkit-inner-spin-button,
+#offer_master_form input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#offer_master_form input[type="number"] {
+  -moz-appearance: textbox;
+}
+
+/* ==== LIST PAGE ==== */
+
+/* ------ Status Badges ------ */
+.label-success {
+  background-color: #00a65a !important;
+}
+
+.label-danger {
+  background-color: #dd4b39 !important;
+}
+
+/* ------ DataTable Action Buttons ------ */
+#offer_master_list .btn-group .btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 2px;
+}
+
+/* ------ Status Filter Dropdown ------ */
+#status_filter {
+  border-radius: 3px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+#status_filter:focus {
+  border-color: #3c8dbc;
+  box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.15);
+}
+
+/* ------ Mobile Responsive ------ */
+@media (max-width: 768px) {
+  #offer_master_list .btn-group .btn {
+    display: block;
+    margin-bottom: 3px;
+    width: 100%;
+  }
+
+  #offer_master_form .panel {
+    margin-bottom: 15px;
+  }
+
+  .slab-select-row {
+    flex-direction: column !important;
+  }
+  .slab-select-col {
+    margin-bottom: 10px;
+  }
+}
+
+/* ==== MAPPING FORM — SECTION LAYOUT ==== */
+
+/* ------ Section Container ------ */
+.mapping-section {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  padding: 18px 20px 14px;
+  margin-bottom: 18px;
+  position: relative;
+  transition: box-shadow 0.2s ease;
+}
+
+.mapping-section:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ------ Section Header ------ */
+.mapping-section-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  letter-spacing: 0.2px;
+}
+
+.mapping-section-header i {
+  margin-right: 8px;
+  font-size: 15px;
+}
+
+/* ------ Mapping Form Labels ------ */
+#mapping_form_box label {
+  font-weight: 600;
+  font-size: 12.5px;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+#mapping_form_box label i.text-muted {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ------ Mapping Form Controls ------ */
+#mapping_form_box .form-control {
+  border-radius: 4px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#mapping_form_box .form-control:focus {
+  border-color: #3c8dbc;
+  box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.12);
+}
+
+/* ------ Age Filter Radio Toggle ------ */
+.age-filter-toggle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.age-radio-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  color: #555;
+  background: #fafafa;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.age-radio-label:hover {
+  border-color: #aaa;
+  background: #f5f5f5;
+}
+
+.age-radio-label input[type="radio"] {
+  margin-right: 6px;
+  margin-top: 0;
+}
+
+.age-radio-label input[type="radio"]:checked + .age-radio-text {
+  color: #3c8dbc;
+  font-weight: 600;
+}
+
+.age-radio-label:has(input[type="radio"]:checked) {
+  border-color: #3c8dbc;
+  background: #f0f7fc;
+}
+
+.age-radio-text small {
+  margin-left: 3px;
+}
+
+/* ------ Slab Select Row (flex) ------ */
+.slab-select-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.slab-select-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.slab-btn-col {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+/* ------ Action Buttons ------ */
+.mapping-actions {
+  text-align: center;
+  padding-top: 18px;
+  margin-top: 6px;
+  border-top: 1px dashed #ddd;
+}
+
+.mapping-btn-save {
+  padding: 9px 30px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.mapping-btn-save:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(60, 141, 188, 0.35);
+}
+
+.mapping-btn-save:active {
+  transform: translateY(0);
+}
+
+.mapping-btn-cancel {
+  padding: 9px 24px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px;
+  border-radius: 4px !important;
+  margin-left: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.mapping-btn-cancel:hover {
+  background-color: #e8e8e8 !important;
+}
+
+/* ------ Modal Input Focus ------ */
+#modal_add_slab .form-control:focus {
+  border-color: #605ca8;
+  box-shadow: 0 0 0 2px rgba(96, 92, 168, 0.15);
+}
+
+#modal_add_slab .close:hover {
+  opacity: 1;
+}
+
+/* ------ Number Input Spinners (Modal) ------ */
+#modal_add_slab input[type="number"]::-webkit-inner-spin-button,
+#modal_add_slab input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#modal_add_slab input[type="number"] {
+  -moz-appearance: textbox;
+}
+
+/* ------ Select2 Overrides for Mapping Form ------ */
+#mapping_form_box .select2-container--default .select2-selection--single,
+#mapping_form_box .select2-container--default .select2-selection--multiple {
+  border-radius: 4px;
+  border: 1px solid #d2d6de;
+  min-height: 34px;
+  transition: border-color 0.2s ease;
+}
+
+#mapping_form_box .select2-container--default.select2-container--focus .select2-selection--multiple,
+#mapping_form_box .select2-container--default.select2-container--open .select2-selection--single {
+  border-color: #3c8dbc;
+  box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.12);
+}
+
+/* ------ Status Radio Toggle (Active / Inactive) ------ */
+#offer_master_form .status-radio-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#offer_master_form .status-radio-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  color: #555;
+  background: #fafafa;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+#offer_master_form .status-radio-label:hover {
+  border-color: #aaa;
+  background: #f5f5f5;
+}
+
+#offer_master_form .status-radio-label input[type="radio"] {
+  margin-right: 6px;
+  margin-top: 0;
+}
+
+#offer_master_form .status-active input[type="radio"] {
+  accent-color: #00a65a;
+}
+
+#offer_master_form .status-inactive input[type="radio"] {
+  accent-color: #dd4b39;
+}
+
+#offer_master_form .status-radio-label input[type="radio"]:checked + .status-radio-text {
+  font-weight: 600;
+}
+
+/* Active — green (via :has and .checked fallback) */
+#offer_master_form .status-radio-label.status-active:has(input[type="radio"]:checked),
+#offer_master_form .status-radio-label.status-active.checked {
+  border-color: #00a65a;
+  background: #eef9f2;
+  color: #00a65a;
+}
+
+#offer_master_form .status-radio-label.status-active input[type="radio"]:checked + .status-radio-text,
+#offer_master_form .status-radio-label.status-active.checked .status-radio-text {
+  color: #00a65a;
+}
+
+/* Inactive — red (via :has and .checked fallback) */
+#offer_master_form .status-radio-label.status-inactive:has(input[type="radio"]:checked),
+#offer_master_form .status-radio-label.status-inactive.checked {
+  border-color: #dd4b39;
+  background: #fdf0ee;
+  color: #dd4b39;
+}
+
+#offer_master_form .status-radio-label.status-inactive input[type="radio"]:checked + .status-radio-text,
+#offer_master_form .status-radio-label.status-inactive.checked .status-radio-text {
+  color: #dd4b39;
+}

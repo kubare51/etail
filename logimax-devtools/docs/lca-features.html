@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCA — Logimax Code Analyzer | Feature Documentation</title>
+    <meta name="description" content="Complete feature documentation for LCA v0.1.0 — 31 CLI commands, 28 MCP tools, 30 GitHub Actions, 3 Git Hooks for automated SDLC.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a2234;
+            --bg-code: #0d1321;
+            --border: #1e2d45;
+            --border-glow: #2563eb33;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --gradient-hero: linear-gradient(135deg, #1e3a5f 0%, #0a0e17 50%, #1a1033 100%);
+            --gradient-blue: linear-gradient(135deg, #3b82f6, #06b6d4);
+            --gradient-green: linear-gradient(135deg, #10b981, #06b6d4);
+            --gradient-purple: linear-gradient(135deg, #8b5cf6, #ec4899);
+            --gradient-orange: linear-gradient(135deg, #f97316, #f59e0b);
+            --gradient-red: linear-gradient(135deg, #ef4444, #f97316);
+            --shadow-card: 0 4px 24px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 30px rgba(59,130,246,0.15);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+        /* ── Hero ── */
+        .hero {
+            background: var(--gradient-hero);
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.25);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .hero h1 span {
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── Container ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* ── Navigation ── */
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10,14,23,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 0;
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .nav-inner::-webkit-scrollbar { display: none; }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(59,130,246,0.12);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* ── Sections ── */
+        .section {
+            padding: 64px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-header {
+            margin-bottom: 40px;
+        }
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .section-label.blue { color: var(--accent-blue); }
+        .section-label.green { color: var(--accent-green); }
+        .section-label.purple { color: var(--accent-purple); }
+        .section-label.orange { color: var(--accent-orange); }
+        .section-label.red { color: var(--accent-red); }
+        .section-label.cyan { color: var(--accent-cyan); }
+        .section-label.yellow { color: var(--accent-yellow); }
+        .section h2 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 700px;
+        }
+
+        /* ── Feature Cards ── */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .feature-card.blue::before { background: var(--gradient-blue); }
+        .feature-card.green::before { background: var(--gradient-green); }
+        .feature-card.purple::before { background: var(--gradient-purple); }
+        .feature-card.orange::before { background: var(--gradient-orange); }
+        .feature-card.red::before { background: var(--gradient-red); }
+        .feature-card:hover {
+            border-color: rgba(59,130,246,0.3);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+        .card-icon.blue { background: rgba(59,130,246,0.12); color: var(--accent-blue); }
+        .card-icon.green { background: rgba(16,185,129,0.12); color: var(--accent-green); }
+        .card-icon.purple { background: rgba(139,92,246,0.12); color: var(--accent-purple); }
+        .card-icon.orange { background: rgba(249,115,22,0.12); color: var(--accent-orange); }
+        .card-icon.red { background: rgba(239,68,68,0.12); color: var(--accent-red); }
+        .card-icon.cyan { background: rgba(6,182,212,0.12); color: var(--accent-cyan); }
+        .card-icon.yellow { background: rgba(245,158,11,0.12); color: var(--accent-yellow); }
+        .card-icon.pink { background: rgba(236,72,153,0.12); color: var(--accent-pink); }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .card-command {
+            position: relative;
+        }
+        .cmd-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: var(--accent-cyan);
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.5;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--accent-blue);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 2;
+        }
+        .copy-btn:hover { background: rgba(59,130,246,0.3); }
+        .copy-btn.copied { color: var(--accent-green); border-color: var(--accent-green); }
+
+        .card-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .tag.cli { background: rgba(59,130,246,0.12); color: var(--accent-blue); }
+        .tag.mcp { background: rgba(139,92,246,0.12); color: var(--accent-purple); }
+        .tag.action { background: rgba(16,185,129,0.12); color: var(--accent-green); }
+        .tag.hook { background: rgba(249,115,22,0.12); color: var(--accent-orange); }
+        .tag.critical { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+        .tag.ready { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+        .tag.blocked { background: rgba(245,158,11,0.15); color: var(--accent-yellow); }
+
+        /* ── Demo Result Block ── */
+        .demo-result {
+            background: rgba(16,185,129,0.05);
+            border: 1px solid rgba(16,185,129,0.2);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin-top: 14px;
+            font-size: 13px;
+        }
+        .demo-result .demo-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-green);
+            margin-bottom: 6px;
+        }
+        .demo-result pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        /* ── Phase Badges ── */
+        .phase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .phase-badge.plan { background: rgba(139,92,246,0.12); color: var(--accent-purple); }
+        .phase-badge.code { background: rgba(59,130,246,0.12); color: var(--accent-blue); }
+        .phase-badge.review { background: rgba(6,182,212,0.12); color: var(--accent-cyan); }
+        .phase-badge.test { background: rgba(16,185,129,0.12); color: var(--accent-green); }
+        .phase-badge.deploy { background: rgba(249,115,22,0.12); color: var(--accent-orange); }
+        .phase-badge.monitor { background: rgba(245,158,11,0.12); color: var(--accent-yellow); }
+
+        /* ── Table ── */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .data-table th {
+            background: var(--bg-code);
+            padding: 12px 18px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table td {
+            padding: 12px 18px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(30,45,69,0.5);
+            vertical-align: top;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: rgba(59,130,246,0.03); }
+        .data-table code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            background: var(--bg-code);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--accent-cyan);
+        }
+
+        /* ── Footer ── */
+        .footer {
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero-stats { gap: 20px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .container { padding: 0 16px; }
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .feature-card {
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+        .feature-card:nth-child(1) { animation-delay: 0.05s; }
+        .feature-card:nth-child(2) { animation-delay: 0.1s; }
+        .feature-card:nth-child(3) { animation-delay: 0.15s; }
+        .feature-card:nth-child(4) { animation-delay: 0.2s; }
+        .feature-card:nth-child(5) { animation-delay: 0.25s; }
+        .feature-card:nth-child(6) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span>&#9670;</span> LCA v0.1.0 &mdash; Logimax Code Analyzer
+        </div>
+        <h1>The Complete <span>Code Intelligence</span><br>Platform for Your ERP</h1>
+        <p class="hero-subtitle">
+            31 CLI commands, 28 MCP tools, 30 GitHub Actions, and 3 Git hooks — 
+            all working together to automate your entire SDLC from commit to deploy.
+        </p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">31</div>
+                <div class="stat-label">CLI Commands</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">28</div>
+                <div class="stat-label">MCP Tools</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">30</div>
+                <div class="stat-label">GitHub Actions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Git Hooks</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ NAV ═══════════════════════ -->
+<nav class="nav-bar" id="nav">
+    <div class="nav-inner">
+        <button class="nav-btn active" onclick="scrollToSection('indexing')">&#128269; Indexing</button>
+        <button class="nav-btn" onclick="scrollToSection('quality')">&#9889; Quality</button>
+        <button class="nav-btn" onclick="scrollToSection('security')">&#128274; Security</button>
+        <button class="nav-btn" onclick="scrollToSection('health')">&#128200; Health</button>
+        <button class="nav-btn" onclick="scrollToSection('risk')">&#9888;&#65039; Risk</button>
+        <button class="nav-btn" onclick="scrollToSection('workflow')">&#128736; Workflow</button>
+        <button class="nav-btn" onclick="scrollToSection('docs')">&#128214; Docs</button>
+        <button class="nav-btn" onclick="scrollToSection('testing')">&#129514; Testing</button>
+        <button class="nav-btn" onclick="scrollToSection('mcp')">&#129302; MCP</button>
+        <button class="nav-btn" onclick="scrollToSection('actions')">&#9881;&#65039; Actions</button>
+        <button class="nav-btn" onclick="scrollToSection('hooks')">&#128279; Hooks</button>
+    </div>
+</nav>
+
+<!-- ═══════════════════════ INDEXING & ANALYSIS ═══════════════════════ -->
+<section class="section" id="indexing">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label blue">&#128269; SDLC Phase: Plan + Code</div>
+            <h2>Codebase Indexing &amp; Analysis</h2>
+            <p class="section-desc">Build a searchable dependency graph of your entire codebase. Parse PHP, JavaScript, and Python files to map every function call, class dependency, and data flow.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card blue">
+                <div class="card-icon blue">&#128451;</div>
+                <div class="card-title">lca index</div>
+                <div class="card-desc">Parse a file or directory and build a function-call dependency map. Supports PHP, JS, and Python. This is the foundation — most other commands depend on the index.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca index admin/application/controllers/ --name billing_index</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: index_module</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon blue">&#128640;</div>
+                <div class="card-title">lca index (fullstack)</div>
+                <div class="card-desc">Index the entire application stack in one call: controllers, models, JS, and SQL views. Produces a combined index with cross-resolution (AJAX &rarr; Controller &rarr; Model &rarr; DB Table).</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca index C:\xampp\htdocs\etail_v3 --fullstack</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: index_fullstack</span>
+                    <span class="tag critical">Unlocks 5 commands</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon cyan">&#128260;</div>
+                <div class="card-title">lca update</div>
+                <div class="card-desc">Incrementally re-index only files that changed since last index. Fast — takes seconds instead of minutes.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca update --index billing_index.json</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon blue">&#128270;</div>
+                <div class="card-title">lca search</div>
+                <div class="card-desc">Search for functions by name across the entire indexed codebase. Case-insensitive, pattern-based matching.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca search "calculateDiscount" --index billing_index.json</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: search_functions</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon purple">&#128279;</div>
+                <div class="card-title">lca crossref</div>
+                <div class="card-desc">Extract cross-language dependencies: maps JavaScript AJAX calls to PHP controller methods. Essential for tracing the full request lifecycle.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca crossref --index fullstack_index.json --controller billing</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: get_ajax_endpoints</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon cyan">&#127959;</div>
+                <div class="card-title">lca modules</div>
+                <div class="card-desc">Analyze high-level architecture: module-to-module dependencies, which modules share tables, and which modules call each other.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca modules --index fullstack_index.json</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon green">&#128450;</div>
+                <div class="card-title">lca sql-map</div>
+                <div class="card-desc">Map which PHP functions read from or write to which database tables. Critical for understanding data flow and planning schema changes.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca sql-map admin/application/models/</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: sql_map, get_table_usage</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ CODE QUALITY ═══════════════════════ -->
+<section class="section" id="quality">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label green">&#9889; SDLC Phase: Code + Review</div>
+            <h2>Code Quality Analysis</h2>
+            <p class="section-desc">Detect complexity hotspots, N+1 queries, code smells, duplicate code, dead code, hardcoded values, and technical debt hiding in comments.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card green">
+                <div class="card-icon green">&#128200;</div>
+                <div class="card-title">lca quality</div>
+                <div class="card-desc">Show the worst functions by cyclomatic complexity. Quickly identify the most complex, hardest-to-maintain code in your project.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca quality admin/application/controllers/admin_ret_billing.php</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo Result</div>
+                    <pre>createNewCustomer   CC=31 (billing)
+updateNewCustomer   CC=30 (billing)
+getEstimationDetails CC=25 (billing)
+paymentmode_edit    CC=25 (billing)</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: get_hotspots, get_metrics</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon red">&#128163;</div>
+                <div class="card-title">lca n1</div>
+                <div class="card-desc">Detect N+1 query patterns — database calls inside loops. These are silent performance killers that multiply query count by data volume.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca n1 admin/application/models/ret_billing_model.php</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo — 9 N+1 Patterns Found</div>
+                    <pre>HIGH: resetOrphanBills()  — 5 DB calls in foreach (L2913)
+HIGH: update_issue_data() — DB call in foreach (L7632)
+HIGH: get_trans_charges() — DB call in foreach (L11606)
+HIGH: get_bt_details()    — DB call in foreach (L11625)
+HIGH: get_previous_data() — DB call in foreach (L12172)</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: scan_n1</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon yellow">&#128290;</div>
+                <div class="card-title">lca hardcoded</div>
+                <div class="card-desc">Scan for hardcoded values: magic numbers in WHERE clauses, hardcoded URLs, IPs, dates, emails, and status codes buried in business logic.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca hardcoded admin/application/controllers/admin_ret_billing.php</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo — 22 Hardcoded Values</div>
+                    <pre>HC-002 Logic: == 15  (billing, 9 occurrences)
+HC-002 Logic: == 11  (cancel_bill)
+HC-002 Logic: >= 80  (update_order_status)
+HC-003 Config: "https://onesignal..." (hardcoded URL)</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: scan_hardcoded</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon purple">&#129528;</div>
+                <div class="card-title">lca smells</div>
+                <div class="card-desc">Detect code anti-patterns: god classes (1000+ LOC), long methods (200+ LOC), long parameter lists (8+), high coupling, deep nesting, feature envy, shotgun surgery.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca smells --index fullstack_index.json</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: code_smells</span>
+                    <span class="tag blocked">Needs Symbol DB</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon pink">&#128203;</div>
+                <div class="card-title">lca duplicates</div>
+                <div class="card-desc">Find near-duplicate functions using structural fingerprinting. Detects copy-pasted code across files that should be refactored into shared utilities.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca duplicates admin/application/controllers/ --similarity 0.8</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: find_duplicates</span>
+                    <span class="tag blocked">Needs Symbol DB</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon red">&#128128;</div>
+                <div class="card-title">lca reaper</div>
+                <div class="card-desc">Dead code detection: find functions that are never called anywhere. Excludes controller entry points and constructors. Sorted by LOC for maximum cleanup impact.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca reaper --index fullstack_index.json</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: find_dead_code</span>
+                    <span class="tag blocked">Needs Index</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon orange">&#128221;</div>
+                <div class="card-title">lca todo-scan</div>
+                <div class="card-desc">Find all TODO, FIXME, HACK, and BUG comments in the codebase. Tracks hidden technical debt that developers leave behind in comments.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca todo-scan admin/application/</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: todo_scan</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ SECURITY ═══════════════════════ -->
+<section class="section" id="security">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label red">&#128274; SDLC Phase: Review</div>
+            <h2>Security Scanning</h2>
+            <p class="section-desc">Automated detection of SQL injection, XSS, raw superglobals, eval() usage, and other CI3-specific security vulnerabilities.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card red">
+                <div class="card-icon red">&#128737;</div>
+                <div class="card-title">scan_security (MCP)</div>
+                <div class="card-desc">Scan PHP files for CI3 security vulnerabilities: SQL injection (raw queries), XSS (unescaped output), raw $_POST/$_GET usage, eval(), and unvalidated file uploads. Returns severity, rule ID, and recommendations.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block"># Via MCP (used by Antigravity during bug fixes)
+scan_security(path="admin/application/controllers/", severity="HIGH")</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo — Billing Controller</div>
+                    <pre>272 security findings (0 critical) in 1 file
+Categories: raw $_POST, unescaped output, CSRF gaps</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag mcp">MCP: scan_security</span>
+                    <span class="tag action">Action: security-scan.yml</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ HEALTH & REPORTING ═══════════════════════ -->
+<section class="section" id="health">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label yellow">&#128200; SDLC Phase: Monitor</div>
+            <h2>Health Scoring &amp; Reporting</h2>
+            <p class="section-desc">Unified health scores (0-100, A-F grade) combining all analysis dimensions. Track health trends over time with baselines and regression detection.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card orange">
+                <div class="card-icon yellow">&#127942;</div>
+                <div class="card-title">lca health</div>
+                <div class="card-desc">Compute a unified health score combining complexity, security, dead code, N+1 queries, hardcoded values, and code smells. Outputs score breakdown by category with A-F grade.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca health admin/application/controllers/admin_ret_billing.php</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo — Grade F (31/100)</div>
+                    <pre>Complexity:  0/100   (83 functions with CC&gt;15)
+Security:    0/100   (272 findings)
+N+1 Queries: 100/100 (clean)
+Hardcoded:   100/100 (clean)
+Confidence:  80%</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: get_health_score</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card orange">
+                <div class="card-icon orange">&#128202;</div>
+                <div class="card-title">lca report</div>
+                <div class="card-desc">Generate a visual HTML health report with charts, trend lines, and detailed findings. Perfect for sharing with stakeholders and tracking improvement.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca report admin/application/ --output health_report.html</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card orange">
+                <div class="card-icon green">&#128201;</div>
+                <div class="card-title">lca diff-health</div>
+                <div class="card-desc">Compare two health snapshots to detect regressions. Shows what improved and what degraded between releases. Can fail CI if health decreases (--fail-on-regression).</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca diff-health baseline_v3.1.json current.json --fail-on-regression</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: diff_health</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card orange">
+                <div class="card-icon cyan">&#128190;</div>
+                <div class="card-title">lca baseline</div>
+                <div class="card-desc">Save and compare health baselines over time. Capture a snapshot after each release to enable historical trend tracking and regression gates in CI.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca baseline save --name v3.1-release
+lca baseline diff v3.0-release v3.1-release</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ RISK & IMPACT ═══════════════════════ -->
+<section class="section" id="risk">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label red">&#9888;&#65039; SDLC Phase: Review + Deploy</div>
+            <h2>Risk &amp; Impact Analysis</h2>
+            <p class="section-desc">Score regression risk before deployment. Trace the full blast radius of any code change across functions, modules, AJAX routes, and database tables.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card red">
+                <div class="card-icon red">&#128293;</div>
+                <div class="card-title">lca risk</div>
+                <div class="card-desc">Score regression risk for files using: git churn (commit frequency) &times; code complexity &times; author count. Identifies bug magnets — files most likely to cause production incidents.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca risk . --branch --base PRODUCTION</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo — Branch Risk Score</div>
+                    <pre>ret_purchase_order_model.php  CRITICAL 75/100 (62 commits, 10 authors, CC=21)
+admin_app_api.php             MEDIUM   35/100 (8 commits, CC=38)
+admin_ret_lot.php             MEDIUM   30/100 (6 commits, CC=28)
+healthcheck.php               LOW      10/100 (1 commit, CC=12)</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card red">
+                <div class="card-icon orange">&#128165;</div>
+                <div class="card-title">lca impact</div>
+                <div class="card-desc">Analyze the blast radius of changes to a specific function. Shows direct callers, indirect callers (depth 2+), affected AJAX routes, and risk level.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca impact "Admin_ret_billing::billing" --depth 3</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: get_impact, change_impact</span>
+                </div>
+            </div>
+
+            <div class="feature-card red">
+                <div class="card-icon purple">&#128722;</div>
+                <div class="card-title">lca migration-check</div>
+                <div class="card-desc">Before running ALTER TABLE, scan all code that reads or writes the specified tables. Shows every PHP function that would be affected by schema changes.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca migration-check admin/application/ ret_billing,ret_estimation</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: migration_check</span>
+                    <span class="tag action">Action: migration-safety.yml</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card red">
+                <div class="card-icon cyan">&#128722;</div>
+                <div class="card-title">lca client-diff</div>
+                <div class="card-desc">Compare two client codebases at the function level. Shows functions that exist in one but not the other, and similarity scores for modified functions.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca client-diff C:\client_A C:\client_B --output diff_report.md</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ GIT & WORKFLOW ═══════════════════════ -->
+<section class="section" id="workflow">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label purple">&#128736; SDLC Phase: Code + Deploy</div>
+            <h2>Git Workflow Automation</h2>
+            <p class="section-desc">Structured changesets, auto-generated commit messages, rich PR descriptions, and release notes — all derived from your actual code changes.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card purple">
+                <div class="card-icon purple">&#128221;</div>
+                <div class="card-title">lca changeset</div>
+                <div class="card-desc">Create a structured changeset manifest from git diff. Auto-detects affected modules, computes risk score, categorizes files, and generates a conventional commit message.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca changeset . --base PRODUCTION --title "billing discount fix"</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo</div>
+                    <pre>ID: d3e321689
+Files: 77 changed (39 added, 36 modified, 2 deleted)
+Modules: dashboard, inventory, purchase, settings, sync
+Risk: CRITICAL (100/100)</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: get_changeset</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card purple">
+                <div class="card-icon green">&#128172;</div>
+                <div class="card-title">lca commit-msg</div>
+                <div class="card-desc">Generate a structured commit message for git hooks. Reads from .changes/current.json if available, otherwise auto-detects module from staged diff. Patches the commit message file in-place for seamless hook integration.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block"># Standalone usage
+lca commit-msg . --raw
+
+# Git hook mode (patches message file)
+lca commit-msg . --msg-file .git/COMMIT_EDITMSG</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo</div>
+                    <pre>feat(lca): add 7 new developer tools
+
+- W1: Changeset manifest for structured change tracking</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag hook">Hook: commit-msg</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card purple">
+                <div class="card-icon blue">&#128196;</div>
+                <div class="card-title">lca pr</div>
+                <div class="card-desc">Generate a rich PR description from changeset + git diff. Outputs categorized file lists (Controllers, Models, JS, Views), module detection, risk scoring, commit log, and a context-aware review checklist.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block"># Print to stdout
+lca pr . --raw --base PRODUCTION
+
+# Save to file for gh pr create --body-file
+lca pr . --raw --base PRODUCTION --output pr_body.md</div>
+                </div>
+                <div class="demo-result">
+                    <div class="demo-label">&#9989; Live Demo — PR body auto-generated</div>
+                    <pre>## feat(lca): add 7 new developer tools
+### Summary
+| Risk | CRITICAL (100/100) | Files | 77 | Modules | 5 |
+### Modified Files (categorized by Controllers/Models/JS/Views)
+### Review Checklist (context-aware)</pre>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag action">Action: pr-auto-body.yml</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card purple">
+                <div class="card-icon orange">&#128220;</div>
+                <div class="card-title">lca release-notes</div>
+                <div class="card-desc">Generate release notes from changeset history. Groups changes by type (features, fixes, refactors) and module. Includes risk summary.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca release-notes . --since v3.0 --output RELEASE_NOTES.md</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: release_notes</span>
+                    <span class="tag blocked">Needs changeset history</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ DOCS & ONBOARDING ═══════════════════════ -->
+<section class="section" id="docs">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label cyan">&#128214; SDLC Phase: Plan + Monitor</div>
+            <h2>Documentation &amp; Onboarding</h2>
+            <p class="section-desc">Auto-generate Module Brain documentation, flow diagrams, and API endpoint docs from code analysis — not manually written.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card blue">
+                <div class="card-icon cyan">&#129504;</div>
+                <div class="card-title">lca brain</div>
+                <div class="card-desc">Auto-generate Module Brain documentation from code analysis. Produces the 8-document structure (MODULE_BRAIN, CONTROLLERS, MODELS, etc.) used by Antigravity for bug diagnosis.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca brain --module billing --index fullstack_index.json</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon purple">&#128194;</div>
+                <div class="card-title">lca flowmap</div>
+                <div class="card-desc">Generate Mermaid flow diagrams for module onboarding. Visualize data flow from JS &rarr; Controller &rarr; Model &rarr; DB for any module.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca flowmap --module estimation --index fullstack_index.json</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card blue">
+                <div class="card-icon green">&#128218;</div>
+                <div class="card-title">api_docs (MCP)</div>
+                <div class="card-desc">Generate API endpoint documentation — discovers all AJAX routes, their controllers, models called, tables accessed, and JS callers. Auto-generated, not manually maintained.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block"># Via MCP
+api_docs(controller_filter="billing", limit=50)</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag mcp">MCP: api_docs</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ TESTING ═══════════════════════ -->
+<section class="section" id="testing">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label green">&#129514; SDLC Phase: Test</div>
+            <h2>Testing &amp; Verification</h2>
+            <p class="section-desc">Generate test skeletons, analyze test coverage gaps, and run the project regression test suite.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card green">
+                <div class="card-icon green">&#129514;</div>
+                <div class="card-title">lca gen-test</div>
+                <div class="card-desc">Generate a PHPUnit test file skeleton with all dependencies automatically mocked. Analyzes the target class to stub models, helpers, and libraries.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca gen-test admin/application/controllers/admin_ret_billing.php</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon cyan">&#128202;</div>
+                <div class="card-title">lca test-coverage</div>
+                <div class="card-desc">Analyze E2E test coverage: page objects, test counts per feature, URL coverage, visual regression points, and untested controller gaps.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca test-coverage --tests-dir tests/</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag mcp">MCP: get_test_coverage</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+            <div class="feature-card green">
+                <div class="card-icon blue">&#128640;</div>
+                <div class="card-title">lca verify</div>
+                <div class="card-desc">Run the full Project Regression Test Suite: PHPUnit tests + LCA health audits combined in one command. The go/no-go gate before deployment.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca verify</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag cli">CLI</span>
+                    <span class="tag ready">Ready</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ MCP SERVER ═══════════════════════ -->
+<section class="section" id="mcp">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label purple">&#129302; AI Agent Integration</div>
+            <h2>MCP Server — 28 Tools</h2>
+            <p class="section-desc">LCA exposes all analysis capabilities as MCP tools. Antigravity calls these programmatically during bug investigation, impact analysis, and code reviews.</p>
+        </div>
+        <div class="card-command" style="margin-bottom: 24px;">
+            <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+            <div class="cmd-block">lca serve   # Start MCP server in stdio mode</div>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>MCP Tool</th>
+                    <th>What Antigravity Uses It For</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td rowspan="3"><strong>Indexing</strong></td><td><code>index_module</code></td><td>Build dependency map for a single module</td></tr>
+                <tr><td><code>index_fullstack</code></td><td>Build combined cross-language index</td></tr>
+                <tr><td><code>load_index</code></td><td>Load existing index into memory at session start</td></tr>
+                <tr><td rowspan="3"><strong>Navigation</strong></td><td><code>search_functions</code></td><td>Find functions by name during bug investigation</td></tr>
+                <tr><td><code>get_callers</code></td><td>Trace who calls a function (upstream)</td></tr>
+                <tr><td><code>get_callees</code></td><td>Trace what a function calls (downstream)</td></tr>
+                <tr><td rowspan="3"><strong>Impact</strong></td><td><code>get_impact</code></td><td>"What breaks if I change this?" before fixing</td></tr>
+                <tr><td><code>change_impact</code></td><td>File-level impact analysis for changed files</td></tr>
+                <tr><td><code>get_full_chain</code></td><td>Trace JS &rarr; Controller &rarr; Model &rarr; DB chain</td></tr>
+                <tr><td rowspan="4"><strong>Data Flow</strong></td><td><code>get_table_usage</code></td><td>Find all functions touching a DB table</td></tr>
+                <tr><td><code>get_ajax_endpoints</code></td><td>List AJAX routes and their PHP handlers</td></tr>
+                <tr><td><code>get_view_deps</code></td><td>Map views to controllers and vice versa</td></tr>
+                <tr><td><code>sql_map</code></td><td>Complete table-to-code mapping</td></tr>
+                <tr><td rowspan="5"><strong>Quality</strong></td><td><code>get_metrics</code></td><td>Get CC, LOC, nesting, coupling for a function</td></tr>
+                <tr><td><code>get_hotspots</code></td><td>Find worst offenders by any metric</td></tr>
+                <tr><td><code>code_smells</code></td><td>Detect anti-patterns during audits</td></tr>
+                <tr><td><code>find_dead_code</code></td><td>Identify cleanup candidates</td></tr>
+                <tr><td><code>find_duplicates</code></td><td>Find copy-pasted code for refactoring</td></tr>
+                <tr><td rowspan="3"><strong>Scanning</strong></td><td><code>scan_security</code></td><td>Security review before deploying fixes</td></tr>
+                <tr><td><code>scan_n1</code></td><td>Catch N+1 queries before merge</td></tr>
+                <tr><td><code>scan_hardcoded</code></td><td>Find magic numbers before they cause bugs</td></tr>
+                <tr><td rowspan="3"><strong>Health</strong></td><td><code>get_health_score</code></td><td>Score a file or directory for health check</td></tr>
+                <tr><td><code>get_quality_report</code></td><td>Full quality report with grade</td></tr>
+                <tr><td><code>diff_health</code></td><td>Regression detection between snapshots</td></tr>
+                <tr><td rowspan="4"><strong>Workflow</strong></td><td><code>get_changeset</code></td><td>Create changeset from git diff</td></tr>
+                <tr><td><code>git_churn</code></td><td>Find bug magnets (high churn + high complexity)</td></tr>
+                <tr><td><code>get_test_coverage</code></td><td>Analyze test suite coverage</td></tr>
+                <tr><td><code>migration_check</code></td><td>Pre-ALTER TABLE safety check</td></tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px;">
+            <div class="feature-card purple" style="max-width: 600px;">
+                <div class="card-icon purple">&#127912;</div>
+                <div class="card-title">lca ui</div>
+                <div class="card-desc">Launch the LCA Cockpit — a local web UI for visual code exploration, call graph visualization, and interactive health dashboards.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block">lca ui --index fullstack_index.json --port 8000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ GITHUB ACTIONS ═══════════════════════ -->
+<section class="section" id="actions">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label green">&#9881;&#65039; CI/CD Automation</div>
+            <h2>GitHub Actions — 30 Workflows</h2>
+            <p class="section-desc">Automated pipelines for PR review, testing, deployment, client sync, and governance. Every workflow runs on self-hosted runners.</p>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Workflow</th>
+                    <th>Trigger</th>
+                    <th>What It Does</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td rowspan="6"><strong>PR &amp; Code Quality</strong></td><td><code>pr-auto-body.yml</code></td><td>PR opened</td><td>Auto-fills PR description from LCA pr-generator</td></tr>
+                <tr><td><code>pr-enrichment.yml</code></td><td>PR sync + label</td><td>Auto-labels: module, risk, scope, size</td></tr>
+                <tr><td><code>pr-branch-guard.yml</code></td><td>PR created</td><td>Enforces promotion order (Dev&rarr;QA&rarr;Support&rarr;PROD)</td></tr>
+                <tr><td><code>pr-intelligence.yml</code></td><td>PR events</td><td>Advanced PR analysis and risk assessment</td></tr>
+                <tr><td><code>lca-check.yml</code></td><td>PR events</td><td>Run LCA health checks on changed files</td></tr>
+                <tr><td><code>impact-analysis.yml</code></td><td>PR events</td><td>Impact analysis on changed code</td></tr>
+                <tr><td rowspan="2"><strong>Security</strong></td><td><code>security-scan.yml</code></td><td>PR events</td><td>Security vulnerability scanning</td></tr>
+                <tr><td><code>performance-check.yml</code></td><td>PR events</td><td>Performance and N+1 analysis</td></tr>
+                <tr><td rowspan="2"><strong>Safety</strong></td><td><code>migration-safety.yml</code></td><td>PR with SQL</td><td>Check ALTER TABLE impact before merge</td></tr>
+                <tr><td><code>config-drift.yml</code></td><td>Scheduled</td><td>Detect config drift across client instances</td></tr>
+                <tr><td rowspan="3"><strong>Testing</strong></td><td><code>e2e-tests.yml</code></td><td>PR events</td><td>Run Playwright E2E test suite</td></tr>
+                <tr><td><code>smoke-tests.yml</code></td><td>Post-deploy</td><td>Post-deployment smoke tests</td></tr>
+                <tr><td><code>post-deploy-regression.yml</code></td><td>Post-deploy</td><td>Full regression suite</td></tr>
+                <tr><td rowspan="5"><strong>Deployment</strong></td><td><code>deploy-source.yml</code></td><td>Merge/manual</td><td>Deploy source repo to environments</td></tr>
+                <tr><td><code>deploy-mono-client.yml</code></td><td>Merge/manual</td><td>Deploy mono-repo clients</td></tr>
+                <tr><td><code>deploy-portmax.yml</code></td><td>Manual</td><td>Deploy Portmax client</td></tr>
+                <tr><td><code>deploy-notifications.yml</code></td><td>Deploy events</td><td>Slack/Teams deployment notifications</td></tr>
+                <tr><td><code>post-merge-deploy.yml</code></td><td>Merge event</td><td>Auto-deploy after merge</td></tr>
+                <tr><td rowspan="2"><strong>Release</strong></td><td><code>auto-changelog.yml</code></td><td>Push/merge</td><td>Auto-generate CHANGELOG from commits</td></tr>
+                <tr><td><code>requirement-traceability.yml</code></td><td>PR events</td><td>Trace PRs back to requirements</td></tr>
+                <tr><td rowspan="4"><strong>Client Sync</strong></td><td><code>sync-to-client.yml</code></td><td>Manual/auto</td><td>Push source changes to client repos</td></tr>
+                <tr><td><code>sync-batch.yml</code></td><td>Scheduled</td><td>Batch sync to all clients</td></tr>
+                <tr><td><code>sync-logimax-clients.yml</code></td><td>Various</td><td>Sync Logimax clients organization</td></tr>
+                <tr><td><code>update-client-dropdown.yml</code></td><td>Various</td><td>Update client selector in CI</td></tr>
+                <tr><td><strong>Onboarding</strong></td><td><code>dev-onboarding.yml</code></td><td>Manual</td><td>New developer environment setup</td></tr>
+                <tr><td><strong>Monitoring</strong></td><td><code>batch-sync-failure.yml</code></td><td>Scheduled</td><td>Monitor sync job failures</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══════════════════════ GIT HOOKS ═══════════════════════ -->
+<section class="section" id="hooks">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label orange">&#128279; Local Enforcement</div>
+            <h2>Git Hooks — 3 Hooks</h2>
+            <p class="section-desc">Local enforcement layer — validates commits, enriches messages, and blocks dangerous pushes before code ever leaves the developer's machine.</p>
+        </div>
+        <div class="feature-grid">
+
+            <div class="feature-card orange">
+                <div class="card-icon green">&#9989;</div>
+                <div class="card-title">commit-msg <span class="tag ready" style="margin-left: 8px;">ENABLED</span></div>
+                <div class="card-desc">Auto-enriches commit messages via LCA. If the developer writes a bare "fixed stuff" message, LCA replaces it with <code>fix(billing): correct discount calc</code>. Already-structured messages pass through untouched.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block"># Configuration in .githooks/config:
+COMMIT_MSG=on    # Enable/disable
+
+# Priority order:
+# 1. .changes/current.json (if changeset exists)
+# 2. Auto-detect from staged diff (module detection)
+# 3. Reject if still unstructured</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag hook">Git Hook</span>
+                    <span class="tag ready">Active</span>
+                </div>
+            </div>
+
+            <div class="feature-card orange">
+                <div class="card-icon yellow">&#9888;&#65039;</div>
+                <div class="card-title">pre-commit <span class="tag blocked" style="margin-left: 8px;">DISABLED</span></div>
+                <div class="card-desc">When enabled, runs lint and format checks before allowing a commit. Can enforce PHP syntax checks, JS linting, and file size limits.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block"># Enable in .githooks/config:
+PRE_COMMIT=on</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag hook">Git Hook</span>
+                    <span class="tag blocked">Disabled</span>
+                </div>
+            </div>
+
+            <div class="feature-card orange">
+                <div class="card-icon red">&#128683;</div>
+                <div class="card-title">pre-push <span class="tag blocked" style="margin-left: 8px;">DISABLED</span></div>
+                <div class="card-desc">When enabled, blocks direct pushes to protected branches (PRODUCTION, QA, support). Forces developers to use Pull Requests.</div>
+                <div class="card-command">
+                    <button class="copy-btn" onclick="copyCmd(this)">Copy</button>
+                    <div class="cmd-block"># Enable in .githooks/config:
+PRE_PUSH=on</div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag hook">Git Hook</span>
+                    <span class="tag blocked">Disabled</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ INFRASTRUCTURE ═══════════════════════ -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-label cyan">&#127959; Infrastructure</div>
+            <h2>Architecture</h2>
+        </div>
+        <div class="card-command">
+            <div class="cmd-block" style="font-size: 13px; line-height: 1.7; color: var(--text-secondary);">logimax-devtools/backend/lca_core/
+├── lca/
+│   ├── cli.py              # 31 CLI commands (Typer)
+│   ├── mcp_server.py       # 28 MCP tools (stdio)
+│   ├── core/               # Indexer, ImpactAnalyzer
+│   ├── parsers/             # JS, PHP, Python (tree-sitter)
+│   ├── analysis/            # Module detection, security, N+1
+│   ├── workflow/            # Changeset, PR generator
+│   ├── storage/             # SQLite symbol DB, JSON indexes
+│   ├── tools/               # Reaper, ModuleMapper
+│   └── cockpit/             # Local web UI
+├── changeset.py             # Standalone changeset CLI
+├── pr_generator.py          # Standalone PR body generator
+└── pyproject.toml           # uv project config (v0.1.0)
+
+.githooks/
+├── commit-msg               # LCA-powered commit enrichment
+├── pre-commit               # (disabled) Lint checks
+├── pre-push                 # (disabled) Branch protection
+└── config                   # Hook enable/disable toggles
+
+.github/workflows/           # 30 GitHub Actions
+scripts/
+├── git-commit.ps1           # Interactive commit helper (Windows)
+├── git-commit.sh            # Interactive commit helper (Linux)
+├── deploy-pr.ps1            # PR creation with auto-fill
+└── deploy-pr.sh             # PR creation with auto-fill</div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="footer">
+    <div class="container">
+        <p>LCA v0.1.0 &mdash; Logimax Code Analyzer &mdash; Built for retail_v5 ERP</p>
+        <p style="margin-top: 4px;">Last updated: June 9, 2026</p>
+    </div>
+</footer>
+
+<script>
+    // ── Copy to clipboard ──
+    function copyCmd(btn) {
+        const block = btn.parentElement.querySelector('.cmd-block');
+        const text = block.textContent.trim();
+        navigator.clipboard.writeText(text).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    // ── Smooth scroll to section ──
+    function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            const navHeight = document.getElementById('nav').offsetHeight;
+            const top = el.getBoundingClientRect().top + window.scrollY - navHeight - 16;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+        // Update active nav
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+
+    // ── Active nav on scroll ──
+    const sections = document.querySelectorAll('.section[id]');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navBtns.forEach(b => b.classList.remove('active'));
+                const activeBtn = document.querySelector(`.nav-btn[onclick*="${entry.target.id}"]`);
+                if (activeBtn) activeBtn.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-100px 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

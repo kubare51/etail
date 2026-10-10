@@ -1,0 +1,62 @@
+# Data for the generalized QC piece/weight boundary rule (test_qc_partial_wt_boundary.py).
+# Extends qc_single_pcs.yml's literal-1-Pc coverage to the boundary rule at ANY piece count:
+# taking/rejecting an entire remaining or issued piece count together requires the full
+# corresponding weight; genuine partial splits (neither side at 0) stay unrestricted.
+#
+# IMPORTANT: the restriction only applies to items whose ret_category.cat_type == 1 (Ornament).
+# two_pcs_qc_ref_no / five_pcs_po_ref_no / four_pcs_po_ref_no below must be booked against an
+# Ornament category. bullion_two_pcs_qc_ref_no (TC_QC_BOUNDARY_005) is booked against a
+# Bullion category (cat_type=2) specifically to prove the boundary rule does NOT apply there.
+#
+# These values must be seeded on the target environment before running
+# test_qc_partial_wt_boundary.py — tests skip cleanly (pytest.skip) when a key is absent.
+module: qc_partial_wt_boundary
+data_version: 1
+
+test_cases:
+  - id: TC_QC_BOUNDARY_001
+    description: "QA-reported bug: 2 Pcs / 100.000 g issued line, all pcs rejected but only partial weight"
+    flow_type: "receipt"
+    two_pcs_qc_ref_no: "QC_TWO_PCS_001"
+    full_reject_partial_gwt: 25.000
+    full_issue_gwt: 100.000
+    expected_message: "Pieces and weight must match at the boundary: processing all pieces requires the full weight, and processing zero pieces requires zero weight. Partial weight is allowed only for a partial piece count."
+
+  - id: TC_QC_BOUNDARY_002
+    description: "5 Pcs / 500.000 g balance, taking every remaining piece but only partial weight"
+    flow_type: "issue"
+    five_pcs_po_ref_no: "PO_FIVE_PCS_001"
+    employee: "Admin"
+    full_pcs: 5
+    full_gwt: 500.000
+    partial_gwt: 300.000
+    expected_message: "Pieces and weight must match at the boundary: processing all pieces requires the full weight, and processing zero pieces requires zero weight. Partial weight is allowed only for a partial piece count."
+
+  - id: TC_QC_BOUNDARY_003
+    description: "Multi-round drawdown (user's own worked example): 4 Pcs/100g -> issue 3 Pcs/70g -> last 1 Pc/30g must be whole"
+    flow_type: "issue_multi_round"
+    four_pcs_po_ref_no: "PO_FOUR_PCS_001"
+    employee: "Admin"
+    round1_pcs: 3
+    round1_gwt: 70.000
+    round2_full_pcs: 1
+    round2_full_gwt: 30.000
+    round2_partial_gwt: 20.000
+    expected_message: "Partial weight processing is not allowed for a single-piece item. The complete piece and weight must be processed."
+
+  - id: TC_QC_BOUNDARY_004
+    description: "Genuine partial splits remain unrestricted at any piece count (regression)"
+    flow_type: "regression"
+    five_pcs_po_ref_no: "PO_FIVE_PCS_001"
+    partial_issue_pcs: 2
+    partial_issue_gwt: 150.000
+    five_pcs_qc_ref_no: "QC_FIVE_PCS_001"
+    partial_reject_pcs: 1
+    partial_reject_gwt: 80.000
+
+  - id: TC_QC_BOUNDARY_005
+    description: "Restriction scoped to Ornament only: a 2-Pcs Bullion (cat_type=2) line, all pcs rejected but partial weight, must remain allowed"
+    flow_type: "receipt"
+    bullion_two_pcs_qc_ref_no: "QC_BULLION_TWO_PCS_001"
+    full_reject_partial_gwt: 25.000
+    full_issue_gwt: 100.000

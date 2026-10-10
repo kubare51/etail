@@ -1,0 +1,30 @@
+# ============================================
+# Git Hooks Configuration
+# ============================================
+# Toggle each hook ON or OFF.
+# Change 'off' to 'on' to enable a hook.
+# 
+# Rollout plan:
+#   Phase 1: Enable pre-commit (syntax checks only)
+#   Phase 2: Enable commit-msg (message format)
+#   Phase 3: Enable pre-push (branch protection)
+#
+# All hooks start OFF to avoid surprising devs.
+# ============================================
+
+# Pre-commit: PHP/Python syntax check before commit
+# Blocks commits with syntax errors
+PRE_COMMIT=off
+
+# Commit message format enforcement
+# Requires: type(module): description
+# Example: fix(billing): correct discount calculation
+COMMIT_MSG=on
+
+# Pre-push: Block direct push to PRODUCTION/QA/support
+# Forces devs to use Pull Requests
+PRE_PUSH=off
+
+# Post-merge: Auto LCA reindex after git pull
+# Lightweight, runs in background
+POST_MERGE=on

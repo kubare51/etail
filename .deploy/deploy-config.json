@@ -1,0 +1,67 @@
+{
+  "description": "Logimax Deployment Configuration",
+  "environments": {
+    "DEV": {
+      "branch": "Retail_1.1.1.0001",
+      "url": "http://localhost/admin",
+      "auto_deploy": false,
+      "notify_channel": "",
+      "health_check_endpoints": ["/"],
+      "notes": "Developer local machines"
+    },
+    "QA": {
+      "branch": "QA",
+      "url": "",
+      "auto_deploy": false,
+      "notify_channel": "",
+      "health_check_endpoints": ["/"],
+      "notes": "QA testing environment"
+    },
+    "STAGING": {
+      "branch": "support",
+      "url": "",
+      "auto_deploy": false,
+      "notify_channel": "",
+      "health_check_endpoints": ["/"],
+      "notes": "Pre-production staging"
+    },
+    "PRODUCTION": {
+      "branch": "PRODUCTION",
+      "url": "",
+      "auto_deploy": false,
+      "notify_channel": "",
+      "health_check_endpoints": ["/"],
+      "notes": "Live production servers"
+    }
+  },
+  "promotion_order": [
+    "Retail_1.1.1.0001",
+    "QA",
+    "support",
+    "PRODUCTION"
+  ],
+  "deploy_checklist": {
+    "pre_deploy": [
+      "All PR checks passed (branch guard, smoke tests, PR intelligence)",
+      "PR reviewed and approved",
+      "Database migrations reviewed (if any)",
+      "No active incidents on target environment"
+    ],
+    "post_deploy": [
+      "Health check passed",
+      "Critical flows verified (login, billing, estimation)",
+      "Error dashboard checked (no spike in new errors)",
+      "Stakeholder notified"
+    ]
+  },
+  "critical_files": [
+    "admin/application/config/database.php",
+    "admin/application/config/config.php",
+    "admin/application/config/routes.php",
+    "admin/index.php"
+  ],
+  "rollback": {
+    "auto_rollback_on_health_failure": false,
+    "keep_deploy_logs_days": 30
+  }
+}

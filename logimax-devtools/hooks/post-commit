@@ -1,0 +1,51 @@
+#!/bin/sh
+# ══════════════════════════════════════════════════════════════
+# post-commit hook — Auto-archive changeset after commit
+# ══════════════════════════════════════════════════════════════
+# After a successful commit, moves .changes/current.json to
+# .changes/history/ so the PR generator can aggregate all
+# changesets from the branch.
+# ══════════════════════════════════════════════════════════════
+
+CHANGESET=".changes/current.json"
+HISTORY_DIR=".changes/history"
+
+if [ -f "$CHANGESET" ]; then
+    mkdir -p "$HISTORY_DIR"
+
+    # Filename: timestamp_type_module.json
+    if command -v python &> /dev/null; then
+        FILENAME=$(python -c "
+import json, datetime
+with open('$CHANGESET') as f:
+    d = json.load(f)
+ts = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
+print(f'{ts}_{d.get(\"type\",\"chore\")}_{d.get(\"module\",\"unknown\")}.json')
+" 2>/dev/null)
+    fi
+
+    if [ -z "$FILENAME" ]; then
+        FILENAME="$(date +%Y-%m-%d_%H%M%S)_changeset.json"
+    fi
+
+    # Add commit hash to the changeset before archiving
+    COMMIT_HASH=$(git rev-parse HEAD 2>/dev/null)
+    if command -v python &> /dev/null && [ -n "$COMMIT_HASH" ]; then
+        python -c "
+import json
+with open('$CHANGESET', 'r') as f:
+    d = json.load(f)
+d['commit_hash'] = '$COMMIT_HASH'
+d['commit_hash_short'] = '${COMMIT_HASH:0:7}'
+with open('$CHANGESET', 'w') as f:
+    json.dump(d, f, indent=2)
+" 2>/dev/null
+    fi
+
+    cp "$CHANGESET" "$HISTORY_DIR/$FILENAME"
+    rm "$CHANGESET"
+
+    echo ""
+    echo "  📦 Changeset archived: $FILENAME"
+    echo ""
+fi

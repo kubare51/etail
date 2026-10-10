@@ -1,0 +1,50 @@
+# Purchase Order test data
+module: purchase_po
+data_version: 1
+
+test_cases:
+  - id: TC_PO_001
+    description: "Stock Order — single item"
+    order_for: "Stock Order"
+    karigar: "Thirumala"
+    due_date: "15-07-2026"
+    rate_type: ""
+    rate_value: ""
+    product: "Ring"
+    design: "Kerala"
+    sub_design: "LK Ring"
+    weight_range: "2-GM"
+    size: "2.2-INCH"
+    pieces: "5"
+    description: "Automation stock order"
+    expected:
+      status: pass
+
+  - id: TC_PO_002
+    description: "Customer Order PO"
+    order_for: "Customer Order"
+    karigar: "Thirumala"
+    due_date: "20-07-2026"
+    order_no: "ORD001"
+    expected:
+      status: pass
+
+  - id: TC_PO_MULTI_001
+    description: "Multi-item Stock Order"
+    order_for: "Stock Order"
+    karigar: "Thirumala"
+    due_date: "25-07-2026"
+    items:
+      - product: "Ring"
+        design: "Kerala"
+        sub_design: "LK Ring"
+        weight_range: "2-GM"
+        size: "2.2-INCH"
+        pieces: "3"
+      - product: "Bangles"
+        design: "Kerala"
+        sub_design: "LK Bangle"
+        weight_range: "5-GM"
+        pieces: "2"
+    expected:
+      status: pass

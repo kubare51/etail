@@ -1,0 +1,144 @@
+#!/bin/sh
+# ══════════════════════════════════════════════════════════════
+# commit-msg hook — Auto-generate or validate commit messages
+# ══════════════════════════════════════════════════════════════
+#
+# Mode 1: CHANGESET EXISTS (.changes/current.json)
+#   → Replaces whatever the developer typed with the structured
+#     message generated from the changeset file.
+#   → Antigravity generates this file during bug fix / feature workflows.
+#
+# Mode 2: NO CHANGESET (manual commit)
+#   → Validates format: type(module): description
+#   → Rejects if format is wrong
+#
+# Install: logimax-devtools/install-hooks.bat
+# ══════════════════════════════════════════════════════════════
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Skip merge/revert commits
+if echo "$COMMIT_MSG" | grep -qE "^Merge (branch|pull request|remote)"; then
+    exit 0
+fi
+if echo "$COMMIT_MSG" | grep -qE "^Revert "; then
+    exit 0
+fi
+
+# ══════════════════════════════════════════════════════════════
+# MODE 1: Use changeset file if it exists
+# ══════════════════════════════════════════════════════════════
+CHANGESET=".changes/current.json"
+
+if [ -f "$CHANGESET" ]; then
+    # Check if Python is available
+    if command -v python &> /dev/null; then
+        GENERATED=$(python -c "
+import json, sys
+try:
+    with open('$CHANGESET', 'r') as f:
+        data = json.load(f)
+    ctype = data.get('type', 'chore')
+    module = data.get('module', '')
+    summary = data.get('summary', 'update')
+    ticket = data.get('ticket', '')
+    details = data.get('details', [])
+    impact = data.get('impact', '')
+    testing = data.get('testing', '')
+    files = data.get('files', [])
+
+    # First line
+    if module:
+        msg = f'{ctype}({module}): {summary}'
+    else:
+        msg = f'{ctype}: {summary}'
+
+    # Body — details
+    if details:
+        msg += '\n'
+        for d in details:
+            msg += f'\n- {d}'
+
+    # Impact
+    if impact:
+        msg += f'\n\nImpact: {impact}'
+
+    # Testing
+    if testing:
+        msg += f'\n\nTesting: {testing}'
+
+    # Files changed
+    if files:
+        msg += '\n\nFiles:'
+        for f in files[:10]:
+            msg += f'\n  - {f}'
+        if len(files) > 10:
+            msg += f'\n  ... and {len(files) - 10} more'
+
+    # Footer — ticket ref
+    if ticket:
+        msg += f'\n\nRef: {ticket}'
+
+    print(msg)
+except Exception as e:
+    print(f'error: {e}', file=sys.stderr)
+    sys.exit(1)
+" 2>/dev/null)
+
+        if [ $? -eq 0 ] && [ -n "$GENERATED" ]; then
+            echo "$GENERATED" > "$COMMIT_MSG_FILE"
+            echo ""
+            echo "  ✅ Commit message auto-generated from .changes/current.json"
+            echo "  ─────────────────────────────────────────────────────────────"
+            echo "$GENERATED" | head -1 | sed 's/^/  /'
+            echo ""
+            exit 0
+        fi
+    fi
+fi
+
+# ══════════════════════════════════════════════════════════════
+# MODE 2: Manual commit — validate format
+# ══════════════════════════════════════════════════════════════
+TYPES="fix|feat|refactor|style|perf|docs|merge|resolve|chore|test"
+PATTERN="^($TYPES)(\([a-zA-Z0-9_-]+\))?: .{5,}"
+
+if ! echo "$COMMIT_MSG" | head -1 | grep -qE "$PATTERN"; then
+    echo ""
+    echo "  ❌ COMMIT REJECTED — Invalid commit message format"
+    echo "  ─────────────────────────────────────────────────"
+    echo ""
+    echo "  Your message:  $(head -1 "$COMMIT_MSG_FILE")"
+    echo ""
+    echo "  Required format:"
+    echo "    <type>(<module>): <description>"
+    echo ""
+    echo "  Allowed types:"
+    echo "    fix      — Bug fix"
+    echo "    feat     — New feature"
+    echo "    refactor — Code restructure (no behavior change)"
+    echo "    style    — CSS/UI only changes"
+    echo "    perf     — Performance improvement"
+    echo "    docs     — Documentation only"
+    echo "    chore    — Maintenance task"
+    echo "    test     — Test-related changes"
+    echo ""
+    echo "  Examples:"
+    echo "    fix(billing): correct discount calculation for tagged items"
+    echo "    feat(reports): add section-wise stock filter by tag type"
+    echo ""
+    echo "  💡 TIP: Use Antigravity workflow to auto-generate this."
+    echo ""
+    exit 1
+fi
+
+# Warn if no ticket reference
+if ! echo "$COMMIT_MSG" | grep -qiE "(Ref:|Ticket:|#[0-9]+)"; then
+    echo ""
+    echo "  ⚠️  WARNING: No ticket reference found."
+    echo "  Consider adding:  Ref: <ticket-id>"
+    echo ""
+fi
+
+exit 0

@@ -1,0 +1,67 @@
+# Stock Issue / Receipt test data
+module: stock_issue
+data_version: 1
+
+test_cases:
+  - id: TC_SI_001
+    description: "Tagged stock issue to Customer"
+    process_type: Issue
+    issue_from: "Main Branch"
+    sel_emp: "Admin"
+    issue_type: "General"
+    stock_type: "Taged"
+    metal: "Gold"
+    issued_to: "Customer"
+    cus_name: "9876543210"
+    section: "Necklace"
+    tag_code: "TAG001"
+    rate_per_gram: "9500"
+    remark: "Automation test — tagged issue"
+    expected:
+      status: pass
+
+  - id: TC_SI_002
+    description: "Non-tagged stock issue to Employee"
+    process_type: Issue
+    issue_from: "Main Branch"
+    sel_emp: "Admin"
+    issue_type: "General"
+    stock_type: "NonTag"
+    metal: "Gold"
+    issued_to: "Employee"
+    issue_employee: "Admin"
+    nt_product: "Ring"
+    nt_pcs: "2"
+    nt_gross_wt: "10.500"
+    nt_net_wt: "10.200"
+    rate_per_gram: "9500"
+    expected:
+      status: pass
+
+  - id: TC_SI_003
+    description: "Receipt against issue TC_SI_001"
+    process_type: Receipt
+    issue_from: "Main Branch"
+    sel_emp: "Admin"
+    stock_type: "Taged"
+    receipt_issue_no: ""  # Populated after TC_SI_001 runs
+    expected:
+      status: pass
+
+  - id: TC_SI_004
+    description: "Non-tagged issue — multi-item (pipe separated)"
+    process_type: Issue
+    issue_from: "Main Branch"
+    sel_emp: "Admin"
+    issue_type: "General"
+    stock_type: "NonTag"
+    metal: "Gold"
+    issued_to: "Customer"
+    cus_name: "9876543210"
+    nt_product: "Ring|Necklace"
+    nt_pcs: "1|1"
+    nt_gross_wt: "5.000|15.000"
+    nt_net_wt: "4.800|14.500"
+    rate_per_gram: "9500"
+    expected:
+      status: pass

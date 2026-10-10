@@ -1,0 +1,380 @@
+{
+  "module": "billing",
+  "database": "retail_dev",
+  "extracted_at": "2026-06-13T08:37:00",
+  "tables": {},
+  "status_values": {
+    "ret_billing": {
+      "bill_type": [
+        {
+          "value": "1",
+          "count": 1271
+        },
+        {
+          "value": "5",
+          "count": 639
+        },
+        {
+          "value": "2",
+          "count": 446
+        },
+        {
+          "value": "9",
+          "count": 178
+        },
+        {
+          "value": "4",
+          "count": 163
+        },
+        {
+          "value": "8",
+          "count": 125
+        },
+        {
+          "value": "7",
+          "count": 113
+        },
+        {
+          "value": "3",
+          "count": 87
+        },
+        {
+          "value": "11",
+          "count": 64
+        },
+        {
+          "value": "13",
+          "count": 38
+        },
+        {
+          "value": "10",
+          "count": 21
+        },
+        {
+          "value": "14",
+          "count": 3
+        }
+      ],
+      "bill_status": [
+        {
+          "value": "1",
+          "count": 2821
+        },
+        {
+          "value": "2",
+          "count": 327
+        }
+      ],
+      "billing_for": [
+        {
+          "value": "1",
+          "count": 3099
+        },
+        {
+          "value": "3",
+          "count": 41
+        },
+        {
+          "value": "2",
+          "count": 8
+        }
+      ],
+      "is_credit": [
+        {
+          "value": "0",
+          "count": 2775
+        },
+        {
+          "value": "1",
+          "count": 373
+        }
+      ],
+      "is_to_be": [
+        {
+          "value": "0",
+          "count": 3071
+        },
+        {
+          "value": "1",
+          "count": 77
+        }
+      ],
+      "credit_status": [
+        {
+          "value": "1",
+          "count": 2831
+        },
+        {
+          "value": "2",
+          "count": 317
+        }
+      ],
+      "return_status": [
+        {
+          "value": "0",
+          "count": 3148
+        }
+      ]
+    },
+    "ret_issue_receipt": {
+      "receipt_type": [
+        {
+          "value": "2",
+          "count": 1321
+        },
+        {
+          "value": "3",
+          "count": 985
+        },
+        {
+          "value": "NULL",
+          "count": 972
+        },
+        {
+          "value": "4",
+          "count": 290
+        },
+        {
+          "value": "7",
+          "count": 120
+        },
+        {
+          "value": "1",
+          "count": 102
+        },
+        {
+          "value": "5",
+          "count": 51
+        },
+        {
+          "value": "8",
+          "count": 16
+        },
+        {
+          "value": "6",
+          "count": 9
+        },
+        {
+          "value": "9",
+          "count": 1
+        }
+      ],
+      "issue_type": [
+        {
+          "value": "NULL",
+          "count": 2894
+        },
+        {
+          "value": "3",
+          "count": 373
+        },
+        {
+          "value": "1",
+          "count": 307
+        },
+        {
+          "value": "4",
+          "count": 229
+        },
+        {
+          "value": "2",
+          "count": 59
+        },
+        {
+          "value": "5",
+          "count": 3
+        },
+        {
+          "value": "6",
+          "count": 2
+        }
+      ],
+      "receipt_to": [
+        {
+          "value": "NULL",
+          "count": 3854
+        },
+        {
+          "value": "1",
+          "count": 13
+        }
+      ],
+      "issue_to": [
+        {
+          "value": "NULL",
+          "count": 2897
+        },
+        {
+          "value": "2",
+          "count": 652
+        },
+        {
+          "value": "3",
+          "count": 237
+        },
+        {
+          "value": "1",
+          "count": 70
+        },
+        {
+          "value": "4",
+          "count": 11
+        }
+      ]
+    }
+  },
+  "row_counts": {
+    "ret_taging": 74677,
+    "ret_taging_status_log": 35511,
+    "ret_purchase_items_log": 30708,
+    "ret_section_tag_status_log": 11976,
+    "ret_estimation_items": 6443,
+    "ret_estimation": 6008,
+    "ret_issue_receipt": 3898,
+    "ret_billing_payment": 3787,
+    "ret_billing": 2966,
+    "ret_wallet_transcation": 2896,
+    "ret_issue_rcpt_payment": 2796,
+    "ret_bill_delivery": 2596,
+    "ret_bill_details": 2586,
+    "ret_estimation_item_stones": 2487,
+    "ret_estimation_old_metal_sale_details": 2085,
+    "ret_advance_utilized": 1759,
+    "ret_other_inventory_purchase_items_log": 1666,
+    "ret_wallet": 1522,
+    "ret_other_inventory_purchase_items_details": 1519,
+    "ret_nontag_item_log": 1009,
+    "ret_billing_item_stones": 967,
+    "ret_bill_other_charges": 920,
+    "ret_bill_old_metal_sale_details": 880,
+    "ret_admin_approval_status": 768,
+    "ret_section_nontag_item_log": 744,
+    "ret_partlysold": 729,
+    "ret_billing_advance": 691,
+    "customerorderdetails": 618,
+    "payment": 598,
+    "payment_mode_details": 594,
+    "customerorder": 586,
+    "address": 410,
+    "ret_est_chit_utilization": 387,
+    "ret_home_section_item_log": 383,
+    "customer": 376,
+    "ret_advance_refund": 333,
+    "ret_other_invnetory_issue": 290,
+    "ret_nontag_item": 254,
+    "scheme_account": 229,
+    "ret_bill_return_details": 227,
+    "ret_advance_transfer": 127,
+    "ret_home_section_item": 115,
+    "gift_card": 115,
+    "ret_issue_credit_collection_details": 107,
+    "ret_adv_receipt_tags": 104,
+    "ret_billing_chit_utilization": 99,
+    "wallet_account": 86,
+    "ret_purchase_item_stock_summary": 62,
+    "ret_insurance": 61,
+    "ret_adv_receipt_weight": 50,
+    "ret_service_bill_payment": 50,
+    "otp": 48,
+    "ret_service_bill_details": 43,
+    "ret_service_bill": 42,
+    "ret_issue_expense_details": 42,
+    "wallet_transaction": 35,
+    "ret_bill_other_metals": 31,
+    "ret_cash_collection_details": 28,
+    "bill_no_format": 11,
+    "branch": 8,
+    "ret_cash_collection": 6,
+    "ret_issue_receipt_advance_adj": 6,
+    "ret_customer_company_users": 3,
+    "ret_pos_providers": 3,
+    "ret_receipt_wgt_detail": 2,
+    "ret_pos_device_list": 2,
+    "company": 1,
+    "ret_estimation_item_other_materials": 0,
+    "ret_est_gift_voucher_details": 0,
+    "ret_pos_requests": 0,
+    "ret_ledger_transfer": 0,
+    "ret_cash_adjustment": 0,
+    "ret_billing_gift_voucher_details": 0,
+    "ret_bill_supplier_sales_details": 0,
+    "payment_old_metal": 0,
+    "customer_delivery_address": 0
+  },
+  "foreign_keys": [],
+  "summary": {
+    "tables_scanned": 76,
+    "tables_with_data": 67,
+    "tables_empty": 9,
+    "total_rows": 211166
+  },
+  "db_discoveries": {
+    "new_values_not_in_code": [
+      {
+        "table": "ret_billing",
+        "column": "bill_type",
+        "value": "14",
+        "count": 3,
+        "note": "No label found in code or views"
+      },
+      {
+        "table": "ret_billing",
+        "column": "bill_status",
+        "value": "2",
+        "count": 327,
+        "note": "Only bill_status=1 (Success) was in code"
+      },
+      {
+        "table": "ret_issue_receipt",
+        "column": "issue_type",
+        "value": "5",
+        "count": 3,
+        "note": "Not handled in code"
+      },
+      {
+        "table": "ret_issue_receipt",
+        "column": "issue_type",
+        "value": "6",
+        "count": 2,
+        "note": "Not handled in code"
+      },
+      {
+        "table": "ret_issue_receipt",
+        "column": "receipt_type",
+        "value": "9",
+        "count": 1,
+        "note": "Not handled in code"
+      },
+      {
+        "table": "ret_issue_receipt",
+        "column": "issue_to",
+        "value": "4",
+        "count": 11,
+        "note": "Not handled in code"
+      }
+    ],
+    "code_values_not_in_db": [
+      {
+        "table": "ret_billing",
+        "column": "bill_type",
+        "value": "6",
+        "meaning": "Advance",
+        "note": "In code but 0 rows in dev DB"
+      },
+      {
+        "table": "ret_billing",
+        "column": "bill_type",
+        "value": "12",
+        "meaning": "Supplier Sales Bill",
+        "note": "In code but 0 rows in dev DB"
+      },
+      {
+        "table": "ret_billing",
+        "column": "bill_type",
+        "value": "15",
+        "meaning": "Approval Sales Bill",
+        "note": "In code but 0 rows in dev DB"
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+# Old Metal Process test data
+module: old_metal_process
+data_version: 1
+
+test_cases:
+  - id: TC_OMP_001
+    description: "Melting Issue"
+    process_for: "ISSUE"
+    process_type: "Melting"
+    vendor: "Thirumala"
+    melting_type: "Old Metal"
+    pocket_no: "PKT-001"
+    remark: "Automation melting issue"
+    expected:
+      status: pass
+
+  - id: TC_OMP_002
+    description: "Melting Receipt with modal"
+    process_for: "RECEIPT"
+    process_type: "Melting"
+    vendor: "Thirumala"
+    against_melting: "no"
+    process_no: ""  # Auto-populated from issue
+    modal_category: "Necklace"
+    modal_section: "GOLD"
+    modal_product: "Ring"
+    modal_design: "Kerala"
+    modal_pcs: "1"
+    modal_weight: "5.200"
+    remark: "Automation melting receipt"
+    expected:
+      status: pass
+
+  - id: TC_OMP_003
+    description: "Testing Issue"
+    process_for: "ISSUE"
+    process_type: "Testing"
+    vendor: "Thirumala"
+    pocket_no: "PKT-001"
+    remark: "Automation testing issue"
+    expected:
+      status: pass

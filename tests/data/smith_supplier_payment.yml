@@ -1,0 +1,39 @@
+# Smith Supplier Payment test data
+module: smith_supplier_payment
+data_version: 1
+
+test_cases:
+  - id: TC_SP_001
+    description: "Cash payment — under 10k"
+    bill_type: "BILL"
+    karigar: "Thirumala"
+    bill_selection: "All"
+    payment_mode: "Cash"
+    cash_amount: "5000"
+    remark: "Automation cash payment"
+    expected:
+      status: pass
+
+  - id: TC_SP_002
+    description: "Cash payment — over 10k (should be blocked)"
+    bill_type: "BILL"
+    karigar: "Thirumala"
+    bill_selection: "All"
+    payment_mode: "Cash_Over_10k"
+    cash_amount: "15000"
+    expected:
+      status: blocked
+
+  - id: TC_SP_003
+    description: "Net Banking payment"
+    bill_type: "BILL"
+    karigar: "Thirumala"
+    bill_selection: "All"
+    payment_mode: "NetBanking"
+    nb_type: "NEFT"
+    nb_bank: "SBI"
+    nb_amount: "50000"
+    nb_ref_no: "NB-AUTO-001"
+    nb_date: "06-06-2026"
+    expected:
+      status: pass

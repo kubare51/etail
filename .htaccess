@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Route favicon.ico through PHP handler for dynamic client-based control
+    RewriteRule ^favicon\.ico$ favicon_handler.php [L]
+</IfModule>

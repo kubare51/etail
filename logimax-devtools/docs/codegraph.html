@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCA CodeGraph — Interactive Codebase Dependency Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0a0e17; --bg2: #111827; --bg3: #1a2234; --bg4: #0d1321;
+    --border: #1e2d45; --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
+    --blue: #3b82f6; --cyan: #06b6d4; --green: #10b981; --yellow: #f59e0b;
+    --red: #ef4444; --purple: #8b5cf6; --orange: #f97316; --pink: #ec4899;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); overflow:hidden; height:100vh; }
+
+/* Layout */
+.app { display:grid; grid-template-columns:280px 1fr 320px; grid-template-rows:56px 1fr; height:100vh; }
+
+/* Topbar */
+.topbar { grid-column:1/-1; background:var(--bg2); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; gap:16px; z-index:10; }
+.topbar-brand { font-weight:800; font-size:16px; letter-spacing:-0.5px; display:flex; align-items:center; gap:8px; }
+.topbar-brand span { background:linear-gradient(135deg,var(--blue),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.topbar-divider { width:1px; height:24px; background:var(--border); }
+.search-box { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:8px 14px; color:var(--text); font-size:13px; width:260px; outline:none; font-family:'Inter',sans-serif; transition:border-color 0.2s; }
+.search-box:focus { border-color:var(--blue); }
+.search-box::placeholder { color:var(--text3); }
+.topbar-stats { margin-left:auto; display:flex; gap:16px; font-size:12px; color:var(--text3); }
+.topbar-stats strong { color:var(--text2); font-weight:600; }
+
+/* Sidebar */
+.sidebar { background:var(--bg2); border-right:1px solid var(--border); overflow-y:auto; padding:16px; }
+.sidebar::-webkit-scrollbar { width:4px; }
+.sidebar::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+.sidebar h3 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--text3); margin-bottom:12px; }
+.filter-group { margin-bottom:20px; }
+.filter-btn { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; transition:all 0.15s; width:100%; border:none; background:none; color:var(--text2); text-align:left; }
+.filter-btn:hover { background:rgba(59,130,246,0.08); color:var(--text); }
+.filter-btn.active { background:rgba(59,130,246,0.12); color:var(--blue); }
+.filter-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.filter-count { margin-left:auto; font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+.size-slider { width:100%; margin-top:8px; accent-color:var(--blue); }
+.slider-label { font-size:11px; color:var(--text3); display:flex; justify-content:space-between; margin-top:4px; }
+
+/* Canvas */
+.canvas-container { position:relative; background:var(--bg); overflow:hidden; }
+.canvas-container canvas { display:block; }
+.canvas-controls { position:absolute; bottom:20px; left:20px; display:flex; gap:6px; }
+.canvas-btn { width:36px; height:36px; border-radius:8px; border:1px solid var(--border); background:var(--bg2); color:var(--text2); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.15s; }
+.canvas-btn:hover { background:var(--bg3); color:var(--text); border-color:var(--blue); }
+.canvas-label { position:absolute; top:16px; left:16px; font-size:11px; color:var(--text3); background:var(--bg2); padding:4px 10px; border-radius:6px; border:1px solid var(--border); pointer-events:none; }
+.tooltip { position:absolute; background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:12px; pointer-events:none; display:none; z-index:100; box-shadow:0 8px 32px rgba(0,0,0,0.4); max-width:280px; }
+.tooltip .tt-name { font-weight:700; color:var(--cyan); font-family:'JetBrains Mono',monospace; font-size:13px; margin-bottom:4px; }
+.tooltip .tt-row { display:flex; justify-content:space-between; gap:16px; color:var(--text2); }
+.tooltip .tt-val { font-weight:600; color:var(--text); font-family:'JetBrains Mono',monospace; }
+
+/* Detail Panel */
+.detail-panel { background:var(--bg2); border-left:1px solid var(--border); overflow-y:auto; padding:0; display:flex; flex-direction:column; }
+.detail-panel::-webkit-scrollbar { width:4px; }
+.detail-panel::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+.detail-header { padding:16px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg2); z-index:5; }
+.detail-header h3 { font-size:14px; font-weight:700; color:var(--cyan); font-family:'JetBrains Mono',monospace; word-break:break-all; }
+.detail-header .cat-badge { display:inline-block; padding:2px 8px; border-radius:99px; font-size:10px; font-weight:600; margin-top:6px; }
+.detail-meta { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.meta-item { background:var(--bg3); border-radius:6px; padding:8px 10px; text-align:center; }
+.meta-item .val { font-size:18px; font-weight:800; font-family:'JetBrains Mono',monospace; }
+.meta-item .lbl { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+.detail-section { padding:12px 16px; }
+.detail-section h4 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:8px; }
+.func-list { list-style:none; }
+.func-item { display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:5px; font-size:12px; cursor:default; transition:background 0.1s; }
+.func-item:hover { background:rgba(59,130,246,0.05); }
+.func-name { font-family:'JetBrains Mono',monospace; color:var(--cyan); font-size:11px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.func-metric { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text3); white-space:nowrap; }
+.func-bar { height:3px; border-radius:2px; flex-shrink:0; }
+.conn-list { list-style:none; }
+.conn-item { padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer; transition:all 0.1s; display:flex; justify-content:space-between; align-items:center; }
+.conn-item:hover { background:rgba(59,130,246,0.08); color:var(--blue); }
+.conn-weight { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--orange); }
+.empty-state { padding:40px 20px; text-align:center; color:var(--text3); }
+.empty-state svg { width:48px; height:48px; margin-bottom:12px; opacity:0.3; }
+.empty-state p { font-size:13px; }
+
+/* Category colors */
+.cat-controller { background:rgba(59,130,246,0.15); color:var(--blue); }
+.cat-model { background:rgba(139,92,246,0.15); color:var(--purple); }
+.cat-view { background:rgba(16,185,129,0.15); color:var(--green); }
+.cat-helper { background:rgba(245,158,11,0.15); color:var(--yellow); }
+.cat-javascript { background:rgba(249,115,22,0.15); color:var(--orange); }
+.cat-config { background:rgba(100,116,139,0.15); color:var(--text3); }
+.cat-library { background:rgba(236,72,153,0.15); color:var(--pink); }
+.cat-other { background:rgba(100,116,139,0.1); color:var(--text3); }
+</style>
+</head>
+<body>
+
+<div class="app">
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="topbar-brand">◆ <span>LCA CodeGraph</span></div>
+        <div class="topbar-divider"></div>
+        <input type="text" class="search-box" id="searchInput" placeholder="Search files or functions... (Ctrl+K)">
+        <div class="topbar-stats">
+            <span><strong id="nodeCount">0</strong> files</span>
+            <span><strong id="edgeCount">0</strong> connections</span>
+            <span><strong id="visibleCount">0</strong> visible</span>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="filter-group">
+            <h3>File Categories</h3>
+            <div id="categoryFilters"></div>
+        </div>
+        <div class="filter-group">
+            <h3>Minimum Functions</h3>
+            <input type="range" class="size-slider" id="minFunctions" min="0" max="50" value="3">
+            <div class="slider-label"><span>0</span><span id="minFuncVal">3</span></div>
+        </div>
+        <div class="filter-group">
+            <h3>Minimum Connections</h3>
+            <input type="range" class="size-slider" id="minConnections" min="0" max="30" value="1">
+            <div class="slider-label"><span>0</span><span id="minConnVal">1</span></div>
+        </div>
+        <div class="filter-group">
+            <h3>Layout</h3>
+            <button class="filter-btn active" data-layout="force" onclick="setLayout('force')">
+                <div class="filter-dot" style="background:var(--blue)"></div> Force-Directed
+            </button>
+            <button class="filter-btn" data-layout="radial" onclick="setLayout('radial')">
+                <div class="filter-dot" style="background:var(--cyan)"></div> Radial
+            </button>
+            <button class="filter-btn" data-layout="grid" onclick="setLayout('grid')">
+                <div class="filter-dot" style="background:var(--green)"></div> Grid (by category)
+            </button>
+        </div>
+    </aside>
+
+    <!-- Canvas -->
+    <div class="canvas-container" id="canvasContainer">
+        <canvas id="graphCanvas"></canvas>
+        <div class="tooltip" id="tooltip"></div>
+        <div class="canvas-label" id="canvasLabel">Scroll to zoom • Drag to pan • Click node to inspect</div>
+        <div class="canvas-controls">
+            <button class="canvas-btn" onclick="zoomIn()" title="Zoom In">+</button>
+            <button class="canvas-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+            <button class="canvas-btn" onclick="resetView()" title="Reset View">⟲</button>
+            <button class="canvas-btn" onclick="toggleLabels()" title="Toggle Labels" id="labelToggle">A</button>
+        </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <aside class="detail-panel" id="detailPanel">
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+            <p>Click a node to inspect its<br>functions and connections</p>
+        </div>
+    </aside>
+</div>
+
+<script>
+// ── Globals ──
+let graphData = { nodes: [], edges: [], functions: {} };
+let visibleNodes = [];
+let visibleEdges = [];
+let selectedNode = null;
+let hoveredNode = null;
+let showLabels = true;
+
+// Camera
+let camX = 0, camY = 0, camZoom = 1;
+let isDragging = false, dragStartX, dragStartY, dragStartCamX, dragStartCamY;
+let isDraggingNode = false, draggedNode = null;
+
+// Category config
+const CAT_COLORS = {
+    controller: '#3b82f6', model: '#8b5cf6', view: '#10b981', helper: '#f59e0b',
+    javascript: '#f97316', config: '#64748b', library: '#ec4899', other: '#475569'
+};
+const CAT_LABELS = {
+    controller: 'Controllers', model: 'Models', view: 'Views', helper: 'Helpers',
+    javascript: 'JavaScript', config: 'Config', library: 'Libraries', other: 'Other'
+};
+
+let activeCategories = new Set(Object.keys(CAT_COLORS));
+let minFunctions = 3;
+let minConnections = 1;
+let currentLayout = 'force';
+
+// Canvas
+const canvas = document.getElementById('graphCanvas');
+const ctx = canvas.getContext('2d');
+const container = document.getElementById('canvasContainer');
+
+// ── Load Data ──
+fetch('graph_data.json')
+    .then(r => r.json())
+    .then(data => {
+        graphData = data;
+        initGraph();
+    })
+    .catch(err => {
+        console.error('Failed to load graph_data.json:', err);
+        document.getElementById('canvasLabel').textContent = 'Error: graph_data.json not found. Run extract_graph.py first.';
+    });
+
+function initGraph() {
+    // Assign positions
+    graphData.nodes.forEach((n, i) => {
+        n.x = (Math.random() - 0.5) * 1200;
+        n.y = (Math.random() - 0.5) * 800;
+        n.vx = 0; n.vy = 0;
+        n.radius = Math.max(4, Math.min(30, Math.sqrt(n.functions) * 2.5));
+    });
+
+    // Build adjacency
+    graphData.nodes.forEach(n => { n._inDeg = 0; n._outDeg = 0; });
+    const nodeMap = {};
+    graphData.nodes.forEach(n => nodeMap[n.id] = n);
+    graphData.edges.forEach(e => {
+        const src = nodeMap[e.source];
+        const tgt = nodeMap[e.target];
+        if (src) src._outDeg = (src._outDeg || 0) + 1;
+        if (tgt) tgt._inDeg = (tgt._inDeg || 0) + 1;
+    });
+
+    buildCategoryFilters();
+    applyFilters();
+    resizeCanvas();
+    resetView();
+    startSimulation();
+    render();
+
+    document.getElementById('nodeCount').textContent = graphData.nodes.length;
+    document.getElementById('edgeCount').textContent = graphData.edges.length;
+}
+
+function buildCategoryFilters() {
+    const counts = {};
+    graphData.nodes.forEach(n => counts[n.category] = (counts[n.category] || 0) + 1);
+    const container = document.getElementById('categoryFilters');
+    container.innerHTML = '';
+    for (const [cat, label] of Object.entries(CAT_LABELS)) {
+        if (!counts[cat]) continue;
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn active';
+        btn.dataset.category = cat;
+        btn.innerHTML = `<div class="filter-dot" style="background:${CAT_COLORS[cat]}"></div> ${label} <span class="filter-count">${counts[cat]}</span>`;
+        btn.onclick = () => toggleCategory(cat, btn);
+        container.appendChild(btn);
+    }
+}
+
+function toggleCategory(cat, btn) {
+    if (activeCategories.has(cat)) {
+        activeCategories.delete(cat);
+        btn.classList.remove('active');
+    } else {
+        activeCategories.add(cat);
+        btn.classList.add('active');
+    }
+    applyFilters();
+}
+
+function applyFilters() {
+    const nodeMap = {};
+    graphData.nodes.forEach(n => nodeMap[n.id] = n);
+
+    const connCount = {};
+    graphData.edges.forEach(e => {
+        connCount[e.source] = (connCount[e.source] || 0) + 1;
+        connCount[e.target] = (connCount[e.target] || 0) + 1;
+    });
+
+    visibleNodes = graphData.nodes.filter(n =>
+        activeCategories.has(n.category) &&
+        n.functions >= minFunctions &&
+        (connCount[n.id] || 0) >= minConnections
+    );
+
+    const visSet = new Set(visibleNodes.map(n => n.id));
+    visibleEdges = graphData.edges.filter(e => visSet.has(e.source) && visSet.has(e.target));
+
+    document.getElementById('visibleCount').textContent = visibleNodes.length;
+}
+
+// ── Simulation ──
+let simRunning = false;
+let simAlpha = 1;
+
+function startSimulation() {
+    simAlpha = 1;
+    simRunning = true;
+    simulate();
+}
+
+function simulate() {
+    if (!simRunning || simAlpha < 0.001) { simRunning = false; return; }
+    simAlpha *= 0.995;
+
+    const nodeMap = {};
+    visibleNodes.forEach(n => nodeMap[n.id] = n);
+
+    // Repulsion
+    for (let i = 0; i < visibleNodes.length; i++) {
+        for (let j = i + 1; j < visibleNodes.length; j++) {
+            const a = visibleNodes[i], b = visibleNodes[j];
+            let dx = b.x - a.x, dy = b.y - a.y;
+            let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            let force = 800 / (dist * dist);
+            force = Math.min(force, 5);
+            a.vx -= dx / dist * force * simAlpha;
+            a.vy -= dy / dist * force * simAlpha;
+            b.vx += dx / dist * force * simAlpha;
+            b.vy += dy / dist * force * simAlpha;
+        }
+    }
+
+    // Attraction (edges)
+    visibleEdges.forEach(e => {
+        const a = nodeMap[e.source], b = nodeMap[e.target];
+        if (!a || !b) return;
+        let dx = b.x - a.x, dy = b.y - a.y;
+        let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        let force = (dist - 120) * 0.005 * simAlpha;
+        a.vx += dx / dist * force;
+        a.vy += dy / dist * force;
+        b.vx -= dx / dist * force;
+        b.vy -= dy / dist * force;
+    });
+
+    // Center gravity
+    visibleNodes.forEach(n => {
+        n.vx -= n.x * 0.0003 * simAlpha;
+        n.vy -= n.y * 0.0003 * simAlpha;
+    });
+
+    // Apply velocity
+    visibleNodes.forEach(n => {
+        if (n === draggedNode) return;
+        n.vx *= 0.85;
+        n.vy *= 0.85;
+        n.x += n.vx;
+        n.y += n.vy;
+    });
+
+    requestAnimationFrame(simulate);
+}
+
+// ── Rendering ──
+function render() {
+    const dpr = window.devicePixelRatio || 1;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.translate(camX, camY);
+    ctx.scale(camZoom, camZoom);
+
+    const nodeMap = {};
+    visibleNodes.forEach(n => nodeMap[n.id] = n);
+
+    // Edges
+    visibleEdges.forEach(e => {
+        const a = nodeMap[e.source], b = nodeMap[e.target];
+        if (!a || !b) return;
+        const isHighlighted = selectedNode && (e.source === selectedNode.id || e.target === selectedNode.id);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = isHighlighted 
+            ? (e.source === selectedNode.id ? 'rgba(59,130,246,0.5)' : 'rgba(239,68,68,0.4)')
+            : 'rgba(30,45,69,0.25)';
+        ctx.lineWidth = isHighlighted ? Math.min(3, Math.sqrt(e.weight) * 0.5) : 0.5;
+        ctx.stroke();
+    });
+
+    // Nodes
+    visibleNodes.forEach(n => {
+        const color = CAT_COLORS[n.category] || '#475569';
+        const isSelected = selectedNode === n;
+        const isHovered = hoveredNode === n;
+        const isConnected = selectedNode && visibleEdges.some(e =>
+            (e.source === selectedNode.id && e.target === n.id) ||
+            (e.target === selectedNode.id && e.source === n.id)
+        );
+        const isDimmed = selectedNode && !isSelected && !isConnected;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+        ctx.fillStyle = isDimmed ? color + '20' : color + (isSelected ? 'ff' : isHovered ? 'cc' : '80');
+        ctx.fill();
+
+        if (isSelected || isHovered) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            // Glow
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius + 2, 0, Math.PI * 2);
+            ctx.strokeStyle = color + '40';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        // Labels
+        if (showLabels && camZoom > 0.4 && (n.radius > 8 || isSelected || isHovered || isConnected)) {
+            ctx.font = `${isSelected ? '600' : '400'} ${Math.max(9, 11 / camZoom)}px 'Inter'`;
+            ctx.fillStyle = isDimmed ? 'rgba(148,163,184,0.2)' : isSelected ? '#e2e8f0' : 'rgba(148,163,184,0.8)';
+            ctx.textAlign = 'center';
+            ctx.fillText(n.label, n.x, n.y + n.radius + 12 / camZoom);
+        }
+    });
+
+    ctx.restore();
+    requestAnimationFrame(render);
+}
+
+// ── Interaction ──
+function screenToWorld(sx, sy) {
+    return { x: (sx - camX) / camZoom, y: (sy - camY) / camZoom };
+}
+
+function nodeAt(wx, wy) {
+    for (let i = visibleNodes.length - 1; i >= 0; i--) {
+        const n = visibleNodes[i];
+        const dx = n.x - wx, dy = n.y - wy;
+        if (dx * dx + dy * dy < (n.radius + 4) * (n.radius + 4)) return n;
+    }
+    return null;
+}
+
+canvas.addEventListener('mousedown', e => {
+    const { x, y } = screenToWorld(e.offsetX, e.offsetY);
+    const node = nodeAt(x, y);
+    if (node) {
+        isDraggingNode = true;
+        draggedNode = node;
+        selectNode(node);
+    } else {
+        isDragging = true;
+        dragStartX = e.offsetX; dragStartY = e.offsetY;
+        dragStartCamX = camX; dragStartCamY = camY;
+    }
+});
+
+canvas.addEventListener('mousemove', e => {
+    if (isDragging) {
+        camX = dragStartCamX + (e.offsetX - dragStartX);
+        camY = dragStartCamY + (e.offsetY - dragStartY);
+    } else if (isDraggingNode && draggedNode) {
+        const { x, y } = screenToWorld(e.offsetX, e.offsetY);
+        draggedNode.x = x; draggedNode.y = y;
+        draggedNode.vx = 0; draggedNode.vy = 0;
+    } else {
+        const { x, y } = screenToWorld(e.offsetX, e.offsetY);
+        const node = nodeAt(x, y);
+        hoveredNode = node;
+        canvas.style.cursor = node ? 'pointer' : 'grab';
+
+        const tooltip = document.getElementById('tooltip');
+        if (node) {
+            tooltip.style.display = 'block';
+            tooltip.style.left = (e.offsetX + 16) + 'px';
+            tooltip.style.top = (e.offsetY - 10) + 'px';
+            tooltip.innerHTML = `
+                <div class="tt-name">${node.label}</div>
+                <div class="tt-row"><span>Functions</span><span class="tt-val">${node.functions}</span></div>
+                <div class="tt-row"><span>Total LOC</span><span class="tt-val">${node.total_loc.toLocaleString()}</span></div>
+                <div class="tt-row"><span>Category</span><span class="tt-val">${node.category}</span></div>
+                <div class="tt-row"><span>Connections</span><span class="tt-val">${(node._inDeg||0) + (node._outDeg||0)}</span></div>
+            `;
+        } else {
+            tooltip.style.display = 'none';
+        }
+    }
+});
+
+canvas.addEventListener('mouseup', () => {
+    isDragging = false;
+    isDraggingNode = false;
+    draggedNode = null;
+});
+
+canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    const factor = e.deltaY > 0 ? 0.9 : 1.1;
+    const mx = e.offsetX, my = e.offsetY;
+    camX = mx - (mx - camX) * factor;
+    camY = my - (my - camY) * factor;
+    camZoom *= factor;
+    camZoom = Math.max(0.05, Math.min(5, camZoom));
+}, { passive: false });
+
+// ── Node Selection ──
+function selectNode(node) {
+    selectedNode = node;
+    const panel = document.getElementById('detailPanel');
+    const funcs = graphData.functions[node.id] || [];
+    const nodeMap = {};
+    graphData.nodes.forEach(n => nodeMap[n.id] = n);
+
+    // Find connections
+    const outgoing = [], incoming = [];
+    visibleEdges.forEach(e => {
+        if (e.source === node.id && nodeMap[e.target]) outgoing.push({ node: nodeMap[e.target], weight: e.weight, types: e.types });
+        if (e.target === node.id && nodeMap[e.source]) incoming.push({ node: nodeMap[e.source], weight: e.weight, types: e.types });
+    });
+    outgoing.sort((a, b) => b.weight - a.weight);
+    incoming.sort((a, b) => b.weight - a.weight);
+
+    const maxLoc = Math.max(1, ...funcs.map(f => f.loc));
+
+    panel.innerHTML = `
+        <div class="detail-header">
+            <h3>${node.label}</h3>
+            <span class="cat-badge cat-${node.category}">${node.category}</span>
+        </div>
+        <div class="detail-meta">
+            <div class="meta-item"><div class="val" style="color:var(--cyan)">${node.functions}</div><div class="lbl">Functions</div></div>
+            <div class="meta-item"><div class="val" style="color:var(--orange)">${node.total_loc.toLocaleString()}</div><div class="lbl">Total LOC</div></div>
+            <div class="meta-item"><div class="val" style="color:var(--blue)">${incoming.length}</div><div class="lbl">Depended By</div></div>
+            <div class="meta-item"><div class="val" style="color:var(--purple)">${outgoing.length}</div><div class="lbl">Depends On</div></div>
+        </div>
+        <div class="detail-section">
+            <h4>Top Functions (${funcs.length})</h4>
+            <ul class="func-list">
+                ${funcs.slice(0, 15).map(f => `
+                    <li class="func-item">
+                        <span class="func-name" title="${f.name}">${f.name.split('::').pop()}</span>
+                        <span class="func-metric">${f.loc} LOC</span>
+                        <div class="func-bar" style="width:${Math.max(2, f.loc / maxLoc * 40)}px; background:${f.loc > 500 ? 'var(--red)' : f.loc > 200 ? 'var(--orange)' : f.loc > 100 ? 'var(--yellow)' : 'var(--green)'}"></div>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+        ${incoming.length ? `
+        <div class="detail-section">
+            <h4>⬅ Depended By (${incoming.length})</h4>
+            <ul class="conn-list">
+                ${incoming.slice(0, 15).map(c => `
+                    <li class="conn-item" onclick="jumpToNode('${c.node.id}')">
+                        <span>${c.node.label}</span>
+                        <span class="conn-weight">${c.weight} calls</span>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>` : ''}
+        ${outgoing.length ? `
+        <div class="detail-section">
+            <h4>➡ Depends On (${outgoing.length})</h4>
+            <ul class="conn-list">
+                ${outgoing.slice(0, 15).map(c => `
+                    <li class="conn-item" onclick="jumpToNode('${c.node.id}')">
+                        <span>${c.node.label}</span>
+                        <span class="conn-weight">${c.weight} calls</span>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>` : ''}
+    `;
+}
+
+function jumpToNode(id) {
+    const node = graphData.nodes.find(n => n.id === id);
+    if (!node) return;
+    selectNode(node);
+    // Pan to center on node
+    const cw = container.clientWidth, ch = container.clientHeight;
+    camX = cw / 2 - node.x * camZoom;
+    camY = ch / 2 - node.y * camZoom;
+}
+
+// ── Controls ──
+function zoomIn() { camZoom = Math.min(5, camZoom * 1.3); }
+function zoomOut() { camZoom = Math.max(0.05, camZoom * 0.7); }
+function resetView() {
+    const cw = container.clientWidth, ch = container.clientHeight;
+    camX = cw / 2; camY = ch / 2; camZoom = 0.6;
+    selectedNode = null;
+    document.getElementById('detailPanel').innerHTML = `
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+            <p>Click a node to inspect its<br>functions and connections</p>
+        </div>
+    `;
+}
+function toggleLabels() {
+    showLabels = !showLabels;
+    document.getElementById('labelToggle').style.color = showLabels ? 'var(--blue)' : 'var(--text3)';
+}
+function setLayout(layout) {
+    currentLayout = layout;
+    document.querySelectorAll('[data-layout]').forEach(b => b.classList.remove('active'));
+    document.querySelector(`[data-layout="${layout}"]`).classList.add('active');
+
+    if (layout === 'radial') {
+        const center = { x: 0, y: 0 };
+        const cats = [...new Set(visibleNodes.map(n => n.category))];
+        visibleNodes.forEach((n, i) => {
+            const catIdx = cats.indexOf(n.category);
+            const catAngle = (catIdx / cats.length) * Math.PI * 2;
+            const spread = 100 + n.functions * 3;
+            const jitter = (Math.random() - 0.5) * 60;
+            n.x = Math.cos(catAngle) * spread + Math.cos(catAngle + i * 0.1) * jitter;
+            n.y = Math.sin(catAngle) * spread + Math.sin(catAngle + i * 0.1) * jitter;
+        });
+        startSimulation();
+    } else if (layout === 'grid') {
+        const cats = [...new Set(visibleNodes.map(n => n.category))];
+        const bycat = {};
+        visibleNodes.forEach(n => { if (!bycat[n.category]) bycat[n.category] = []; bycat[n.category].push(n); });
+        let colX = -400;
+        cats.forEach(cat => {
+            const list = bycat[cat] || [];
+            list.sort((a, b) => b.functions - a.functions);
+            list.forEach((n, i) => {
+                n.x = colX + (i % 6) * 60;
+                n.y = -300 + Math.floor(i / 6) * 60;
+                n.vx = 0; n.vy = 0;
+            });
+            colX += 380;
+        });
+    } else {
+        visibleNodes.forEach(n => {
+            n.x = (Math.random() - 0.5) * 1200;
+            n.y = (Math.random() - 0.5) * 800;
+        });
+        startSimulation();
+    }
+}
+
+// ── Search ──
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    if (!q) { hoveredNode = null; return; }
+    const match = visibleNodes.find(n => n.label.toLowerCase().includes(q));
+    if (match) {
+        hoveredNode = match;
+        jumpToNode(match.id);
+    }
+});
+
+document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+    }
+    if (e.key === 'Escape') {
+        searchInput.blur();
+        resetView();
+    }
+});
+
+// ── Sliders ──
+document.getElementById('minFunctions').addEventListener('input', e => {
+    minFunctions = parseInt(e.target.value);
+    document.getElementById('minFuncVal').textContent = minFunctions;
+    applyFilters();
+});
+document.getElementById('minConnections').addEventListener('input', e => {
+    minConnections = parseInt(e.target.value);
+    document.getElementById('minConnVal').textContent = minConnections;
+    applyFilters();
+});
+
+// ── Resize ──
+function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = container.clientWidth * dpr;
+    canvas.height = container.clientHeight * dpr;
+    canvas.style.width = container.clientWidth + 'px';
+    canvas.style.height = container.clientHeight + 'px';
+}
+window.addEventListener('resize', resizeCanvas);
+</script>
+
+</body>
+</html>

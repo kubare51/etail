@@ -1,0 +1,43 @@
+# Smith Metal Issue test data
+module: smith_metal_issue
+data_version: 1
+
+test_cases:
+  - id: TC_SMI_001
+    description: "Normal issue — tag source"
+    karigar: "Thirumala"
+    metal: "Gold"
+    issue_type: "Normal"
+    against_opening: "No"
+    against_order: "No"
+    source_type: "Tag"
+    code: "TAG001"
+    remark: "Automation normal issue"
+    expected:
+      status: pass
+
+  - id: TC_SMI_002
+    description: "Normal issue — against order"
+    karigar: "Thirumala"
+    metal: "Gold"
+    issue_type: "Normal"
+    against_order: "Yes"
+    ref_order_no: "PO001"
+    source_type: "Non Tag"
+    code: ""
+    remark: "Against order issue"
+    expected:
+      status: pass
+
+  - id: TC_SMI_003
+    description: "Approval issue"
+    karigar: "Thirumala"
+    metal: "Gold"
+    issue_type: "Approval"
+    against_opening: "No"
+    against_order: "No"
+    source_type: "Tag"
+    code: "TAG002"
+    remark: "Approval issue test"
+    expected:
+      status: pass

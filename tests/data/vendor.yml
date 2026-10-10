@@ -1,0 +1,50 @@
+# Vendor Registration test data
+module: vendor
+data_version: 1
+
+test_cases:
+  - id: TC_VEN_001
+    description: "Company vendor registration with TCS"
+    user_type: "company"
+    used_for: "Smith"
+    tcs: "Yes"
+    tcs_pct: "1"
+    tds: "No"
+    opening_balance: "50000"
+    financial_year: "2025-2026"
+    first_name: "Automation"
+    last_name: "Vendor"
+    mobile: "9876543210"
+    email: "automation.vendor@test.com"
+    phone: "0471234567"
+    username: "auto_vendor"
+    password: "Test@123"
+    company_name: "Auto Test Jewellers"
+    gst_number: "32AABCU9603R1ZM"
+    address1: "123 Test Street"
+    address2: "Test Area"
+    country: "India"
+    state: "Kerala"
+    city: "Kozhikode"
+    pincode: "673001"
+    remarks: "Automation test vendor"
+    contract_price: "No"
+    expected:
+      status: pass
+
+  - id: TC_VEN_002
+    description: "Individual vendor registration"
+    user_type: "individual"
+    used_for: "Karigar"
+    tcs: "No"
+    tds: "Yes"
+    tds_pct: "2"
+    opening_balance: "0"
+    financial_year: "2025-2026"
+    first_name: "Test"
+    last_name: "Karigar"
+    mobile: "8765432109"
+    email: "test.karigar@test.com"
+    address1: "456 Karigar Lane"
+    expected:
+      status: pass

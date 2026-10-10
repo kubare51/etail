@@ -1,0 +1,714 @@
+/* ===================================
+   Live CockPit — Modern Card Design
+   Matches CRM tab premium styling
+   =================================== */
+
+.cock_pit {
+  padding-left: 20px;
+  padding-right: 20px;
+  background: #f4f6f9;
+}
+
+.dash_heading {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  padding-bottom: 25px;
+}
+
+.container-row {
+  padding-bottom: 12px;
+}
+
+.numbers {
+  text-align: right;
+}
+
+.number_text {
+  text-align: right;
+}
+
+/* === Card Base Styles === */
+.box-items .estimation,
+.box-items .sales,
+.box-items .tag_sales,
+.box-items .old_metal,
+.box-items .sales_credit,
+.box-items .gift_voucher,
+.box-items .lot,
+.box-items .branch_transfer,
+.box-items .reorder_items,
+.box-items .karigar_orders,
+.box-items .customer_orders,
+.box-items .stock_comm,
+.box-items .new_customer,
+.box-items .recent_bills,
+.box-items .cash_abstract,
+.box-items .customer_visit,
+.box-items .influencer_referral,
+.box-items .reward_points,
+.box-items .slow_moving_items,
+.box-items .estimation_details,
+.box-items .trending,
+.box-items .orders,
+.box-items .sales_wise,
+.payment_wise,
+.metal_wise,
+.box-items .om_pending,
+.box-items .om_wip,
+.box-items .om_delivery_ready,
+.box-items .om_delivered,
+.box-items .om_karigar_reminder,
+.box-items .om_karigar_overdue,
+.box-items .pur_inwards,
+.box-items .pur_profit_loss,
+.box-items .pur_cr_de,
+.box-items .pur_qc_rejections,
+.box-items .pur_rate_fixing,
+.box-items .pur_cr_de_supplier,
+.box-items .pur_vendor_payment,
+.box-items .pur_unfix_balance,
+.box-items .pur_outwards,
+.box-items .pur_acct_stock_inwards,
+.box-items .pur_smith_outstanding,
+.box-items .pur_sundry_creditors,
+.box-items .pur_karigar_delay,
+.box-items .pur_delayed_po,
+.box-items .pur_delayed_ratefix,
+.box-items .pur_today_payable,
+.box-items .pur_profit_loss_ratecut,
+.box-items .pur_md_approval,
+.box-items .sc_glance,
+.box-items .sc_top_selling,
+.box-items .sc_top_sellers,
+.box-items .sc_month_on_month,
+.box-items .sc_branch_compare,
+.box-items .sc_store_wise,
+.box-items .sc_avg_wastage,
+.box-items .sc_customer_wise,
+.box-items .sc_product_wise,
+.box-items .gp_details,
+.box-items .stk_product_wise,
+.box-items .stk_section_wise,
+.box-items .stk_karigar_wise {
+  background: #FFF;
+  padding-top: 0px;
+  padding-bottom: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #3c8dbc;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.box-items .estimation:hover,
+.box-items .sales:hover,
+.box-items .tag_sales:hover,
+.box-items .old_metal:hover,
+.box-items .sales_credit:hover,
+.box-items .gift_voucher:hover,
+.box-items .lot:hover,
+.box-items .branch_transfer:hover,
+.box-items .reorder_items:hover,
+.box-items .karigar_orders:hover,
+.box-items .customer_orders:hover,
+.box-items .stock_comm:hover,
+.box-items .new_customer:hover,
+.box-items .recent_bills:hover,
+.box-items .cash_abstract:hover,
+.box-items .customer_visit:hover,
+.box-items .slow_moving_items:hover,
+.box-items .estimation_details:hover,
+.box-items .trending:hover,
+.box-items .orders:hover,
+.box-items .om_pending:hover,
+.box-items .om_wip:hover,
+.box-items .om_delivery_ready:hover,
+.box-items .om_delivered:hover,
+.box-items .om_karigar_reminder:hover,
+.box-items .om_karigar_overdue:hover,
+.box-items .pur_inwards:hover,
+.box-items .pur_profit_loss:hover,
+.box-items .pur_cr_de:hover,
+.box-items .pur_qc_rejections:hover,
+.box-items .pur_rate_fixing:hover,
+.box-items .pur_cr_de_supplier:hover,
+.box-items .pur_vendor_payment:hover,
+.box-items .pur_unfix_balance:hover,
+.box-items .pur_outwards:hover,
+.box-items .pur_acct_stock_inwards:hover,
+.box-items .pur_smith_outstanding:hover,
+.box-items .pur_sundry_creditors:hover,
+.box-items .pur_karigar_delay:hover,
+.box-items .pur_delayed_po:hover,
+.box-items .pur_delayed_ratefix:hover,
+.box-items .pur_today_payable:hover,
+.box-items .pur_profit_loss_ratecut:hover,
+.box-items .pur_md_approval:hover,
+.box-items .sc_glance:hover,
+.box-items .sc_top_selling:hover,
+.box-items .sc_top_sellers:hover,
+.box-items .sc_month_on_month:hover,
+.box-items .sc_branch_compare:hover,
+.box-items .sc_store_wise:hover,
+.box-items .sc_avg_wastage:hover,
+.box-items .sc_customer_wise:hover,
+.box-items .sc_product_wise:hover,
+.box-items .gp_details:hover,
+.box-items .stk_product_wise:hover,
+.box-items .stk_section_wise:hover,
+.box-items .stk_karigar_wise:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+/* === Per-Section Border Colors === */
+.box-items .estimation { border-left-color: #00a65a; }        /* Green — Estimation */
+.box-items .sales { border-left-color: #3c8dbc; }             /* Blue — Sales */
+.box-items .slow_moving_items { border-left-color: #605ca8; }  /* Purple — Yet to Approve */
+.box-items .tag_sales { border-left-color: #f39c12; }          /* Orange — Virtual Tag / Green Tag */
+.box-items .old_metal { border-left-color: #d81b60; }          /* Pink — Old Metal Purchase */
+.box-items .sales_credit { border-left-color: #e74c3c; }       /* Red — Sales Credit */
+.box-items .gift_voucher { border-left-color: #f39c12; }       /* Orange — Gift Voucher */
+.box-items .lot { border-left-color: #00c0ef; }                /* Cyan — Lot */
+.box-items .branch_transfer { border-left-color: #00a65a; }    /* Green — Branch Transfer */
+.box-items .orders { border-left-color: #3c8dbc; }             /* Blue — Orders */
+.box-items .karigar_orders { border-left-color: #605ca8; }     /* Purple — Karigar Orders */
+.box-items .customer_orders { border-left-color: #00c0ef; }    /* Cyan — Customer Orders */
+.box-items .customer_visit { border-left-color: #00a65a; }     /* Green — Customer Visit */
+.box-items .stock_comm { border-left-color: #f39c12; }         /* Orange — Stock */
+.box-items .new_customer { border-left-color: #3c8dbc; }       /* Blue — New Customer */
+.box-items .recent_bills { border-left-color: #00a65a; }       /* Green — Recent Bills */
+.box-items .cash_abstract { border-left-color: #d81b60; }      /* Pink — Cash Abstract */
+.box-items .reorder_items { border-left-color: #e74c3c; }      /* Red — Reorder Items */
+.box-items .estimation_details { border-left-color: #00a65a; } /* Green — Estimation Details */
+.box-items .trending { border-left-color: #3c8dbc; }           /* Blue — Trending */
+.box-items .reward_points { border-left-color: #f39c12; }      /* Orange — Reward Points */
+.box-items .influencer_referral { border-left-color: #605ca8; } /* Purple — Influencer */
+.box-items .sales_wise { border-left-color: #00a65a; }         /* Green — Sales Summary */
+.box-items .payment_wise { border-left-color: #f39c12; }       /* Orange — Payment Mode */
+.box-items .metal_wise { border-left-color: #605ca8; }          /* Purple — Metal Wise */
+/* Order Management tab — distinct colors per status */
+.box-items .om_pending { border-left-color: #f39c12; }          /* Orange — Pending Order */
+.box-items .om_wip { border-left-color: #3c8dbc; }              /* Blue — Work In Progress */
+.box-items .om_delivery_ready { border-left-color: #00a65a; }   /* Green — Delivery Ready */
+.box-items .om_delivered { border-left-color: #00c0ef; }         /* Cyan — Delivered */
+.box-items .om_karigar_reminder { border-left-color: #605ca8; }  /* Purple — Karigar Reminder */
+.box-items .om_karigar_overdue { border-left-color: #e74c3c; }   /* Red — Karigar Overdue */
+/* Purchase tab — distinct colors per section */
+.box-items .pur_inwards { border-left-color: #00a65a; }           /* Green */
+.box-items .pur_profit_loss { border-left-color: #3c8dbc; }       /* Blue */
+.box-items .pur_cr_de { border-left-color: #605ca8; }             /* Purple */
+.box-items .pur_qc_rejections { border-left-color: #e74c3c; }     /* Red */
+.box-items .pur_rate_fixing { border-left-color: #f39c12; }       /* Orange */
+.box-items .pur_cr_de_supplier { border-left-color: #00c0ef; }    /* Cyan */
+.box-items .pur_vendor_payment { border-left-color: #1a237e; }    /* Dark Blue */
+.box-items .pur_unfix_balance { border-left-color: #009688; }     /* Teal */
+.box-items .pur_outwards { border-left-color: #d81b60; }          /* Pink */
+.box-items .pur_acct_stock_inwards { border-left-color: #2e7d32; }/* Dark Green */
+.box-items .pur_smith_outstanding { border-left-color: #4a148c; } /* Deep Purple */
+.box-items .pur_sundry_creditors { border-left-color: #283593; }  /* Indigo */
+.box-items .pur_karigar_delay { border-left-color: #ff8f00; }     /* Amber */
+.box-items .pur_delayed_po { border-left-color: #c62828; }        /* Dark Red */
+.box-items .pur_delayed_ratefix { border-left-color: #e65100; }   /* Deep Orange */
+.box-items .pur_today_payable { border-left-color: #00695c; }     /* Dark Teal */
+.box-items .pur_profit_loss_ratecut { border-left-color: #0277bd; }/* Light Blue */
+.box-items .pur_md_approval { border-left-color: #ef6c00; }       /* Amber Dark */
+/* Sales Chart tab — distinct colors per section */
+.box-items .sc_glance { border-left-color: #9207fb; }              /* Purple — Sales Glance */
+.box-items .sc_top_selling { border-left-color: #3c8dbc; }         /* Blue — Top Selling */
+.box-items .sc_top_sellers { border-left-color: #00a65a; }         /* Green — Top Sellers */
+.box-items .sc_month_on_month { border-left-color: #f39c12; }      /* Orange — Month on Month */
+.box-items .sc_branch_compare { border-left-color: #00c0ef; }      /* Cyan — Branch Compare */
+.box-items .sc_store_wise { border-left-color: #009688; }          /* Teal — Store Wise */
+.box-items .sc_avg_wastage { border-left-color: #e74c3c; }         /* Red — Avg Wastage */
+.box-items .sc_customer_wise { border-left-color: #d81b60; }       /* Pink — Customer Wise */
+.box-items .sc_product_wise { border-left-color: #605ca8; }        /* Purple — Product Wise */
+/* Gross Profit tab */
+.box-items .gp_details { border-left-color: #2e7d32; }             /* Dark Green — Gross Profit */
+/* Stock Chart tab — distinct colors per section */
+.box-items .stk_product_wise { border-left-color: #3c8dbc; }       /* Blue — Product Wise */
+.box-items .stk_section_wise { border-left-color: #00a65a; }       /* Green — Section Wise */
+.box-items .stk_karigar_wise { border-left-color: #f39c12; }       /* Orange — Karigar Wise */
+
+.box-items .no-paddingwidth {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+/* === Section Headings — Modern Gradient Bar === */
+.box-items .item-heading {
+  color: #FFF !important;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 10px 15px !important;
+  margin-bottom: 5px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%); /* default fallback */
+}
+
+/* Color-coded heading backgrounds per section */
+.box-items .estimation .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #28a745 100%);
+}
+.box-items .sales .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%);
+}
+.box-items .slow_moving_items .item-heading {
+  background: linear-gradient(135deg, #605ca8 0%, #7c78b8 100%);
+}
+.box-items .tag_sales .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+}
+.box-items .old_metal .item-heading {
+  background: linear-gradient(135deg, #d81b60 0%, #e91e8c 100%);
+}
+.box-items .sales_credit .item-heading {
+  background: linear-gradient(135deg, #e74c3c 0%, #f06292 100%);
+}
+.box-items .gift_voucher .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffb74d 100%);
+}
+.box-items .lot .item-heading {
+  background: linear-gradient(135deg, #00c0ef 0%, #4dd0e1 100%);
+}
+.box-items .branch_transfer .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #66bb6a 100%);
+}
+.box-items .orders .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%);
+}
+.box-items .karigar_orders .item-heading {
+  background: linear-gradient(135deg, #605ca8 0%, #9575cd 100%);
+}
+.box-items .customer_orders .item-heading {
+  background: linear-gradient(135deg, #00c0ef 0%, #4dd0e1 100%);
+}
+.box-items .customer_visit .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #66bb6a 100%);
+}
+.box-items .stock_comm .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffa726 100%);
+}
+.box-items .new_customer .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%);
+}
+.box-items .recent_bills .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #66bb6a 100%);
+}
+.box-items .cash_abstract .item-heading {
+  background: linear-gradient(135deg, #d81b60 0%, #e91e8c 100%);
+}
+.box-items .reorder_items .item-heading {
+  background: linear-gradient(135deg, #e74c3c 0%, #ef5350 100%);
+}
+.box-items .estimation_details .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #28a745 100%);
+}
+.box-items .trending .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%);
+}
+.box-items .reward_points .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffa726 100%);
+}
+.box-items .influencer_referral .item-heading {
+  background: linear-gradient(135deg, #605ca8 0%, #9575cd 100%);
+}
+/* Sales tab — distinct colors per section */
+.box-items .sales_wise .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #28a745 100%); /* Green — Sales Summary */
+}
+.box-items .payment_wise .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffa726 100%); /* Orange — Payment Mode */
+}
+.box-items .metal_wise .item-heading {
+  background: linear-gradient(135deg, #605ca8 0%, #9575cd 100%); /* Purple — Metal Wise */
+}
+/* Order Management tab — distinct heading colors */
+.box-items .om_pending .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffa726 100%); /* Orange — Pending */
+}
+.box-items .om_wip .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%); /* Blue — WIP */
+}
+.box-items .om_delivery_ready .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #66bb6a 100%); /* Green — Delivery Ready */
+}
+.box-items .om_delivered .item-heading {
+  background: linear-gradient(135deg, #00c0ef 0%, #4dd0e1 100%); /* Cyan — Delivered */
+}
+.box-items .om_karigar_reminder .item-heading {
+  background: linear-gradient(135deg, #605ca8 0%, #9575cd 100%); /* Purple — Karigar Reminder */
+}
+.box-items .om_karigar_overdue .item-heading {
+  background: linear-gradient(135deg, #e74c3c 0%, #ef5350 100%); /* Red — Karigar Overdue */
+}
+/* Purchase tab — distinct heading colors */
+.box-items .pur_inwards .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #28a745 100%); /* Green */
+}
+.box-items .pur_profit_loss .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%); /* Blue */
+}
+.box-items .pur_cr_de .item-heading {
+  background: linear-gradient(135deg, #605ca8 0%, #9575cd 100%); /* Purple */
+}
+.box-items .pur_qc_rejections .item-heading {
+  background: linear-gradient(135deg, #e74c3c 0%, #ef5350 100%); /* Red */
+}
+.box-items .pur_rate_fixing .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffa726 100%); /* Orange */
+}
+.box-items .pur_cr_de_supplier .item-heading {
+  background: linear-gradient(135deg, #00c0ef 0%, #4dd0e1 100%); /* Cyan */
+}
+.box-items .pur_vendor_payment .item-heading {
+  background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%); /* Dark Blue */
+}
+.box-items .pur_unfix_balance .item-heading {
+  background: linear-gradient(135deg, #009688 0%, #26a69a 100%); /* Teal */
+}
+.box-items .pur_outwards .item-heading {
+  background: linear-gradient(135deg, #d81b60 0%, #e91e8c 100%); /* Pink */
+}
+.box-items .pur_acct_stock_inwards .item-heading {
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%); /* Dark Green */
+}
+.box-items .pur_smith_outstanding .item-heading {
+  background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%); /* Deep Purple */
+}
+.box-items .pur_sundry_creditors .item-heading {
+  background: linear-gradient(135deg, #283593 0%, #3f51b5 100%); /* Indigo */
+}
+.box-items .pur_karigar_delay .item-heading {
+  background: linear-gradient(135deg, #ff8f00 0%, #ffb300 100%); /* Amber */
+}
+.box-items .pur_delayed_po .item-heading {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%); /* Dark Red */
+}
+.box-items .pur_delayed_ratefix .item-heading {
+  background: linear-gradient(135deg, #e65100 0%, #fb8c00 100%); /* Deep Orange */
+}
+.box-items .pur_today_payable .item-heading {
+  background: linear-gradient(135deg, #00695c 0%, #00897b 100%); /* Dark Teal */
+}
+.box-items .pur_profit_loss_ratecut .item-heading {
+  background: linear-gradient(135deg, #0277bd 0%, #0288d1 100%); /* Light Blue */
+}
+.box-items .pur_md_approval .item-heading {
+  background: linear-gradient(135deg, #ef6c00 0%, #ff9800 100%); /* Amber Dark */
+}
+/* Sales Chart tab — distinct heading colors */
+.box-items .sc_glance .item-heading {
+  background: linear-gradient(135deg, #9207fb 0%, #b44dff 100%); /* Purple */
+}
+.box-items .sc_top_selling .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%); /* Blue */
+}
+.box-items .sc_top_sellers .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #28a745 100%); /* Green */
+}
+.box-items .sc_month_on_month .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffa726 100%); /* Orange */
+}
+.box-items .sc_branch_compare .item-heading {
+  background: linear-gradient(135deg, #00c0ef 0%, #4dd0e1 100%); /* Cyan */
+}
+.box-items .sc_store_wise .item-heading {
+  background: linear-gradient(135deg, #009688 0%, #26a69a 100%); /* Teal */
+}
+.box-items .sc_avg_wastage .item-heading {
+  background: linear-gradient(135deg, #e74c3c 0%, #ef5350 100%); /* Red */
+}
+.box-items .sc_customer_wise .item-heading {
+  background: linear-gradient(135deg, #d81b60 0%, #e91e8c 100%); /* Pink */
+}
+.box-items .sc_product_wise .item-heading {
+  background: linear-gradient(135deg, #605ca8 0%, #9575cd 100%); /* Purple */
+}
+/* Gross Profit tab */
+.box-items .gp_details .item-heading {
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%); /* Dark Green */
+}
+/* Stock Chart tab — distinct heading colors */
+.box-items .stk_product_wise .item-heading {
+  background: linear-gradient(135deg, #3c8dbc 0%, #5dade2 100%); /* Blue */
+}
+.box-items .stk_section_wise .item-heading {
+  background: linear-gradient(135deg, #00a65a 0%, #28a745 100%); /* Green */
+}
+.box-items .stk_karigar_wise .item-heading {
+  background: linear-gradient(135deg, #f39c12 0%, #ffa726 100%); /* Orange */
+}
+
+/* === Content Items === */
+.box-items .inside-items {
+  padding: 8px 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.box-items .inside-items:last-child {
+  border-bottom: none;
+}
+
+.box-items .label-text {
+  color: #333;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.box-items .label-value {
+  color: #3c8dbc;
+  font-weight: 700;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Sales Chart */
+.box-items .label-dash-value {
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+  font-size: 20px;
+}
+/* Sales Chart */
+
+
+.box-items .images-right {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.box-items .images-right:hover {
+  opacity: 1;
+}
+
+.box-items .images-right img {
+  width: 100%;
+  height: 100%;
+}
+
+.box-items .no_small {
+  color: #888;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.box-items #branch_transfer, .box-items #gift_voucher, .box-items #stock, .box-items #stock_pie , .box-items #s_stock_pie  {
+  height: 150px;
+}
+
+.box-items .stock_comm {
+  margin-bottom: 10px;
+}
+
+.box-items .reward_points .points {
+  color: #3c8dbc;
+  font-weight: bold;
+}
+
+.box-items .reorder_items .item-heading,
+.box-items .recent_bills .item-heading,
+.box-items .new_customer .item-heading,
+.box-items .pending_credit_table .item-heading,
+.box-items .credit_history_table .item-heading,
+.box-items .metal_wise .item-heading {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.box-items .reorder_items{
+  margin-top: 10px;
+}
+
+/* === Table Styling — Modern Clean === */
+.box-items .container-table table {
+  overflow: auto;
+}
+
+.box-items .container-table table tr th {
+  text-align: center;
+  background: #f8f9fa;
+  color: #555;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.box-items .container-table table tr td {
+  text-align: center;
+  font-size: 13px;
+  color: #333;
+}
+
+.box-items .container-table table table tr th {
+  text-align: center;
+}
+
+.box-items .container-table table table tr td {
+  text-align: center;
+}
+
+.box-items .reorder_items .container-table {
+  max-height: 280px;
+}
+
+.box-items .recent_bills .container-table {
+  max-height: 500px;
+}
+
+.box-items .new_customer .container-table {
+  max-height: 500px;
+}
+
+.box-items .estimation_details .container-table {
+  max-height: 493px;
+}
+
+.box-items .container-table {
+  overflow: auto;
+}
+
+.box-items .add-border {
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 5px;
+}
+
+.box-items .alignCenter {
+  text-align: center;
+}
+
+.box-items .stock_comm .image img {
+  width: 40%;
+}
+
+.box-items .stock_comm .inside-items {
+  text-align: center;
+  padding-top: 10px;
+}
+
+.box-items .stock_comm .qty, .box-items .stock_comm .comm_name {
+  line-height: 20px !important;
+}
+
+/* === Cash Abstract — Premium Styling === */
+.box-items .cash_abstract .item-heading {
+  padding-bottom: 5px;
+}
+
+.box-items .cash_abstract .row_ca {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.box-items .cash_abstract .row_ca:hover {
+  background-color: #f0f7ff !important;
+}
+
+.box-items .cash_abstract .symbol {
+  text-align: center;
+  font-weight: 600;
+}
+
+.box-items .cash_abstract .values {
+  text-align: right;
+  font-weight: bold;
+}
+
+.box-items .cash_abstract .odd {
+  background: #FFF;
+}
+
+.box-items .cash_abstract .odd .color {
+  color: #3c8dbc;
+}
+
+.box-items .cash_abstract .even {
+  background: #f8f9fa;
+}
+
+.box-items .cash_abstract .even .color {
+  color: #e67e22;
+}
+
+.box-items .cash_abstract .total {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background: #FFF;
+  border-top: 2px solid #dee2e6;
+}
+
+.box-items .cash_abstract .total .values {
+  font-size: 20px;
+}
+
+.box-items .cash_abstract .total .color {
+  color: #00a65a;
+}
+
+/* === Trending Section === */
+.box-items .trending {
+  margin-top: 10px;
+}
+
+.box-items .trending .item-heading {
+  padding-bottom: 5px;
+}
+
+.box-items .trending .trending_table tr th, .box-items .trending .trending_table tr td {
+  text-align: center;
+  font-weight: bold;
+}
+
+.box-items .trending .trending_table .values {
+  color: #3c8dbc;
+}
+
+/* === Sales Container Table === */
+.box-items .sales .container-table {
+  max-height: 120px;
+}
+
+/* === Badge Styling Overrides === */
+.box-items .label-success {
+  background-color: #00a65a;
+}
+
+.box-items .label-warning {
+  background-color: #f39c12;
+}
+
+.box-items .label-danger {
+  background-color: #e74c3c;
+}
+
+.box-items .label-info {
+  background-color: #00c0ef;
+}
+
+.box-items .label-default {
+  background-color: #777;
+}
+
+/* === Pending Delivery Row === */
+.box-items .pending-del {
+  background: #fef9e7;
+  border-left: 3px solid #f39c12;
+  margin: 0 -15px;
+  padding-left: 18px !important;
+  padding-right: 15px !important;
+}
+
+/* === Blog Box (Bank Deposit table card) === */
+.box-items .blog-box {
+  margin-top: 10px !important;
+}
+/*# sourceMappingURL=cockpit.css.map */

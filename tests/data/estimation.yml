@@ -1,0 +1,64 @@
+# Estimation test data
+module: estimation
+data_version: 1
+
+test_cases:
+  - id: TC_EST_001
+    description: "Tag estimation — Sales (Mc on Gross, Wast On Net)"
+    header:
+      branch: "Main Branch"
+      employee: "Admin"
+      esti_for: Customer
+      customer: "9876543210"
+    tag:
+      enabled: true
+      tag_no: "TAG001"
+    nontag:
+      enabled: false
+    homebill:
+      enabled: false
+    old_metal:
+      enabled: false
+    expected:
+      status: pass
+      calc_type: "Mc on Gross,Wast On Net"
+      bill_type: SALES
+
+  - id: TC_EST_002
+    description: "Tag + NonTag estimation — Sales & Purchase"
+    header:
+      branch: "Main Branch"
+      employee: "Admin"
+      esti_for: Customer
+      customer: "9876543210"
+    tag:
+      enabled: true
+      tag_no: "TAG002"
+    nontag:
+      enabled: true
+    homebill:
+      enabled: false
+    old_metal:
+      enabled: false
+    expected:
+      status: pass
+      bill_type: "SALES"
+
+  - id: TC_EST_003
+    description: "Old metal estimation — Purchase"
+    header:
+      branch: "Main Branch"
+      employee: "Admin"
+      esti_for: Customer
+      customer: "9876543210"
+    tag:
+      enabled: false
+    nontag:
+      enabled: false
+    homebill:
+      enabled: false
+    old_metal:
+      enabled: true
+    expected:
+      status: pass
+      bill_type: "PURCHASE"

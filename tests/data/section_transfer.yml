@@ -1,0 +1,43 @@
+# Section Transfer test data
+module: section_transfer
+data_version: 1
+
+test_cases:
+  - id: TC_ST_001
+    description: "Tagged section transfer"
+    type: "Tagged"
+    branch: "Main Branch"
+    product: "Ring"
+    from_section: "GOLD"
+    to_section: "SILVER"
+    tag_code: "TAG001"
+    old_tag_id: ""
+    estimation_no: ""
+    expected:
+      status: pass
+
+  - id: TC_ST_002
+    description: "Non-tagged packet transfer"
+    type: "Non Tagged"
+    branch: "Main Branch"
+    product: "Necklace"
+    from_section: "GOLD"
+    to_section: "SILVER"
+    packet_code: "PKT001"
+    pcs: ""
+    gwt: ""
+    expected:
+      status: pass
+
+  - id: TC_ST_003
+    description: "Non-tagged partial transfer"
+    type: "Non Tagged"
+    branch: "Main Branch"
+    product: "Bangles"
+    from_section: "GOLD"
+    to_section: "SILVER"
+    packet_code: "PKT002"
+    pcs: "2"
+    gwt: "10.500"
+    expected:
+      status: pass

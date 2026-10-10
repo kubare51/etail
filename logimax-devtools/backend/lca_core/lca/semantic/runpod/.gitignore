@@ -1,0 +1,4 @@
+# RunPod working files
+chunks.jsonl
+*.onnx
+model_output/

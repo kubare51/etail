@@ -1,0 +1,40 @@
+-- Migration: Fix Supplier Ledger showing residual outstanding balance after full payment
+-- Date: 20-07-2026
+-- Issue: Supplier Ledger (ret_view_supplier_ledger) computed the purchase credit entry as
+--        SUM(ret_purchase_order_items.item_cost) only. The purchase_add/job_receipt flow
+--        (admin_ret_purchase.php) applies its invoice round-off purely client-side (JS
+--        rounds the final total and never persists the delta to any column — it is NOT
+--        the same round-off as ret_grn_entry.grn_round_off, which belongs to the separate
+--        GRN Entry screen and is 0/unrelated for POs created via this flow). The Supplier
+--        Payment Entry screen uses ret_purchase_order.tot_purchase_amt (the rounded total)
+--        to compute the amount due, so paying the correct/rounded invoice total never fully
+--        offsets the ledger's under-stated purchase credit, leaving a permanent residual
+--        balance equal to the round-off amount even after the bill is fully settled.
+--        Verified against source1 DB: po_id 989 (P-00145) has tot_purchase_amt=63952.00 but
+--        SUM(item_cost)=63951.63 — a 0.37 gap with no stored round-off value anywhere.
+-- Fix: Section 1 (Purchase Order Items) of ret_view_supplier_ledger now joins a per-PO
+--      `radj` subquery that computes the gap as
+--      (tot_purchase_amt - SUM(item_cost) + tds_tax_value - tcs_tax_value) — subtracting/
+--      adding back tds/tcs since those already have their own ledger sections — and folds
+--      it into the LAST item row of that PO (highest po_item_id), so the ledger shows one
+--      line per item with no separate "ROUND OFF" row, while the per-PO total still
+--      reconciles exactly to tot_purchase_amt.
+--      GUARD: only folds in the delta when ABS(gap) < 1 (round-off, by construction — JS
+--      does Math.round() to the nearest rupee — can never be >= 1). This was verified
+--      necessary against source1: POs created via the separate "GRN Entry" screen (e.g.
+--      po_id 915, 932) show gaps of ~200 between tot_purchase_amt and SUM(item_cost) for
+--      reasons unrelated to rounding (item_cost appears to use a different tax basis in
+--      that flow) — without the guard those would incorrectly get folded in as bogus
+--      adjustments. The guard keeps this fix scoped strictly to the reported round-off issue.
+-- Revision: An earlier version of this fix added a separate "ROUND OFF" UNION ALL line
+--      instead of folding into the item row. Changed per explicit feedback — the ledger
+--      should show one row per item, not a separate round-off line.
+--
+-- NOTE: View definitions are managed in database/views/*.sql (canonical files).
+--       The migration runner applies them automatically after schema migrations.
+
+-- UP
+
+-- Views are applied automatically from database/views/ by run-migrations.sh Phase 2.
+-- Changed files:
+--   database/views/ret_view_supplier_ledger.sql

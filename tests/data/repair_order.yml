@@ -1,0 +1,54 @@
+# Repair Order test data
+module: repair_order
+data_version: 1
+
+test_cases:
+  - id: TC_RO_001
+    description: "Customer repair — single item, In House"
+    order_type: "Customer"
+    work_at: "In House"
+    order_from: "Main Branch"
+    employee: "Admin"
+    customer: "9876543210"
+    metal: "22KT GOLD ORNAMENTS"
+    product: "Ring"
+    design: "Kerala"
+    sub_design: "LK Ring"
+    gross_wt: "5.200"
+    pcs: "1"
+    due_date: "15-07-2026"
+    repair_type: "Repair"
+    stone_data: ""
+    narration: "Customer repair automation test"
+    expected:
+      status: pass
+
+  - id: TC_RO_002
+    description: "Customer repair — multi item"
+    order_type: "Customer"
+    work_at: "In House"
+    order_from: "Main Branch"
+    employee: "Admin"
+    customer: "9876543210"
+    metal: "22KT GOLD ORNAMENTS|22KT GOLD ORNAMENTS"
+    product: "Ring|Necklace"
+    design: "Kerala|Kerala"
+    sub_design: "LK Ring|LK Necklace"
+    gross_wt: "5.200|15.000"
+    pcs: "1|1"
+    due_date: "15-07-2026|20-07-2026"
+    repair_type: "Repair|Polish"
+    expected:
+      status: pass
+
+  - id: TC_RO_003
+    description: "Stock repair — tag scan"
+    order_type: "Stock"
+    work_at: "In House"
+    order_from: "Main Branch"
+    employee: "Admin"
+    tag_code: "TAG001"
+    repair_type: "Repair"
+    narration: "Stock repair test"
+    expected:
+      status: pass

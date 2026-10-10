@@ -1,0 +1,82 @@
+# Masters test data (Metal, Category, Product, Design)
+module: masters
+data_version: 1
+
+metal:
+  - id: TC_METAL_001
+    description: "Full CRUD — create, edit, delete metal"
+    metal_name: "Test Platinum"
+    short_code: "TPT"
+    tax_group: "GST 3%"
+    edit:
+      enabled: true
+      new_code: "TPTU"
+    delete:
+      enabled: true
+
+  - id: TC_METAL_002
+    description: "Create only — no edit/delete"
+    metal_name: "Test Rhodium"
+    short_code: "TRH"
+    tax_group: "GST 3%"
+    edit:
+      enabled: false
+    delete:
+      enabled: false
+
+category:
+  - id: TC_CAT_001
+    description: "Full CRUD — ornament category"
+    category_name: "Test Necklace"
+    hsn_code: "7113"
+    short_code: "TNK"
+    category_type: "Ornament"
+    multi_metal: "No"
+    metal: "Gold"
+    tax_group: "GST 3%"
+    purity: "91.6000"
+    description_text: "Test category for automation"
+    edit:
+      enabled: true
+      new_name: "Test Necklace Updated"
+    delete:
+      enabled: true
+
+  - id: TC_CAT_002
+    description: "Bullion category"
+    category_name: "Test Bar"
+    hsn_code: "7108"
+    short_code: "TBR"
+    category_type: "Bullion"
+    multi_metal: "No"
+    metal: "Gold"
+    tax_group: "GST 3%"
+    purity: "99.5000"
+    edit:
+      enabled: false
+    delete:
+      enabled: true
+
+product:
+  - id: TC_PROD_001
+    description: "Create and edit product"
+    product_name: "Test Ring"
+    short_code: "TRG"
+    category: "Necklace"
+    edit:
+      enabled: true
+      new_name: "Test Ring Updated"
+    delete:
+      enabled: true
+
+design:
+  - id: TC_DES_001
+    description: "Create design with product mapping"
+    design_name: "Test Floral"
+    design_code: "TFL"
+    product: "Ring"
+    edit:
+      enabled: true
+      new_name: "Test Floral V2"
+    delete:
+      enabled: true

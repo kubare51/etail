@@ -1,0 +1,36 @@
+-- Migration: Reconcile Purchase Return amounts in ledger views to the saved final total
+-- Date: 27-07-2026
+-- Issue: Supplier Ledger / Supplier Approval Ledger / Smith Ledger reports (and their print
+--        copies) showed a Purchase Return amount that didn't match the saved transaction
+--        (e.g. return 26-00034: form/print show Final Price 8,03,258.00, ledger showed
+--        8,03,258.01) whenever the round-off was negative. Root cause: these views
+--        reconstructed the return total as SUM(pur_ret_debit_note_amt) + pur_ret_round_off,
+--        but SUM(pur_ret_debit_note_amt) can drift from the true pre-round-off total by a
+--        paisa or two (independent per-item tax rounding), so re-adding round_off on top
+--        doesn't reliably reconcile to ret_purchase_return.return_total_cost — the number
+--        the save/print flow actually persisted and displays as "Final Price".
+--        Verified against source1: 48 of 205 bill_status=1 purchase returns had a sub-rupee
+--        gap between return_total_cost and SUM(debit_note_amt)+round_off.
+-- Fix: In the Purchase Return sections of ret_view_supplier_ledger, ret_view_smith_ledger,
+--      and ret_view_supplier_approval_ledger, use return_total_cost directly as trans_amount
+--      whenever it is within Re.1 of the SUM(debit_note_amt)+round_off reconstruction (i.e.
+--      the gap is plausibly rounding drift, by construction < 1), otherwise fall back to the
+--      previous computation unchanged.
+--      GUARD: same "ABS(gap) < 1" guard used by 20260720_000001 for the PO-side round-off
+--      fix. 30 of 205 returns have a >=1 gap between return_total_cost and the item sum for
+--      reasons unrelated to rounding (verified: some are >1000x apart) — those are left as
+--      they were to avoid silently rewriting numbers for data this fix doesn't understand.
+-- Scope: ret_view_smith_combined_ledger was NOT touched — it isn't used by any of the three
+--        reports above and doesn't fold round_off into its Purchase Return trans_amount at
+--        all (pre-existing, separate gap, out of scope for this fix).
+--
+-- NOTE: View definitions are managed in database/views/*.sql (canonical files).
+--       The migration runner applies them automatically after schema migrations.
+
+-- UP
+
+-- Views are applied automatically from database/views/ by run-migrations.sh Phase 2.
+-- Changed files:
+--   database/views/ret_view_supplier_ledger.sql
+--   database/views/ret_view_supplier_approval_ledger.sql
+--   database/views/ret_view_smith_ledger.sql

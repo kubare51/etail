@@ -1,0 +1,23 @@
+{
+  "name": "etail-e2e-tests",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for ETail v6",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:billing": "npx playwright test billing/",
+    "test:debug": "npx playwright test --debug",
+    "report": "npx playwright show-report",
+    "test:masters:1": "npx playwright test master/master-crud.spec.js -g \"\\(theme\\)|\\(making_type\\)|\\(hook\\)|\\(color\\)|\\(cut\\)|\\(clarity\\)|\\(uom\\)|\\(screw\\)|\\(financial_year\\)\"",
+    "test:masters:2": "npx playwright test master/master-crud.spec.js -g \"\\(metal_type\\)|\\(stock_issue_type\\)|\\(repair_master\\)|\\(product_division\\)|\\(shape\\)|\\(ret_collection\\)|\\(ret_pay_device\\)|\\(ret_account\\)|\\(ret_crdr_ledger\\)\"",
+    "test:masters:3": "npx playwright test master/master-crud.spec.js -g \"\\(ret_delivery\\)|\\(ret_section\\)|\\(material\\)|\\(purity\\)|\\(stone\\)|\\(metal\\)|\\(size\\)|\\(tag\\)\"",
+    "test:masters:4": "npx playwright test master/master-crud.spec.js -g \"\\(diamond\\)|\\(material_rate\\)|\\(old_metal_cat\\)|\\(ret_metalpurity\\)|\\(branch_floor\\)|\\(floor_counter\\)|\\(ret_qc_cancel_reason\\)|\\(tax\\)\"",
+    "test:masters:special": "npx playwright test master/master-special.spec.js",
+    "test:masters:legacy": "npx playwright test master/legacy-validation.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "dotenv": "^16.4.7"
+  }
+}

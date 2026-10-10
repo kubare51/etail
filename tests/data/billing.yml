@@ -1,0 +1,69 @@
+# Billing test data
+module: billing
+data_version: 1
+
+test_cases:
+  - id: TC_BILL_001
+    description: "SALES bill with estimation"
+    header:
+      cost_centre: "Main Branch"
+      billing_to: "Customer"
+      employee: "Admin"
+      customer_number: "9876543210"
+    bill_type: "SALES"
+    direct: false
+    estimation_no: ""  # Will be populated by estimation test output
+    charges:
+      discount: 0
+      handling_charges: 0
+    payment:
+      cash: 50000
+      credit: false
+    expected:
+      status: pass
+
+  - id: TC_BILL_002
+    description: "Direct SALES bill (no estimation)"
+    header:
+      cost_centre: "Main Branch"
+      billing_to: "Customer"
+      employee: "Admin"
+      customer_number: "9876543210"
+    bill_type: "SALES"
+    direct: true
+    charges:
+      discount: 100
+      handling_charges: 50
+    payment:
+      cash: 10000
+      credit: false
+    expected:
+      status: pass
+
+  - id: TC_BILL_003
+    description: "Credit billing with due date"
+    header:
+      cost_centre: "Main Branch"
+      billing_to: "Customer"
+      employee: "Admin"
+      customer_number: "9876543210"
+    bill_type: "CREDIT COLLECTION"
+    direct: true
+    payment:
+      cash: 0
+      credit: true
+      due_date: "2026-07-06"
+    expected:
+      status: pass
+
+  - id: TC_BILL_004
+    description: "PURCHASE bill"
+    header:
+      cost_centre: "Main Branch"
+      billing_to: "Customer"
+      employee: "Admin"
+      customer_number: "9876543210"
+    bill_type: "PURCHASE"
+    direct: false
+    expected:
+      status: pass

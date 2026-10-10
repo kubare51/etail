@@ -1,0 +1,81 @@
+# Tagging test data
+module: tagging
+data_version: 1
+
+test_cases:
+  - id: TC_TAG_001
+    description: "Tag from lot — Mc & Wast On Net"
+    branch: "Main Branch"
+    lot_no: ""  # Will be populated from lot test output
+    product: "Ring"
+    section: "GOLD"
+    design: "Kerala"
+    sub_design: "LK Ring"
+    pcs: 1
+    no_of_items: 1
+    gwt: 5.200
+    less_weight: "No"
+    other_metal: "No"
+    mc_and_va_available: "No"
+    wastage: 8
+    mc_type: "Gram"
+    mc_type_raw: "2"
+    mc: 250
+    size: ""
+    calc_type: "Mc & Wast On Net"
+    rate_mrp: ""
+    huid1: "ABC123"
+    huid2: ""
+    attribute: ""
+    certification: "No"
+    button: "Add"
+    expected:
+      status: pass
+
+  - id: TC_TAG_002
+    description: "Tag from lot — Fixed Rate (MRP)"
+    branch: "Main Branch"
+    lot_no: ""
+    product: "Bangles"
+    section: "GOLD"
+    design: "Kerala"
+    sub_design: "LK Bangle"
+    pcs: 1
+    no_of_items: 1
+    gwt: 10.000
+    less_weight: "No"
+    other_metal: "No"
+    mc_and_va_available: "No"
+    wastage: 0
+    mc_type: "Piece"
+    mc_type_raw: "1"
+    mc: 0
+    calc_type: "Fixed Rate"
+    rate_mrp: "50000"
+    huid1: ""
+    button: "Add"
+    expected:
+      status: pass
+
+  - id: TC_TAG_003
+    description: "Tag — Add & Copy"
+    branch: "Main Branch"
+    lot_no: ""
+    product: "Ring"
+    section: "GOLD"
+    design: "Kerala"
+    sub_design: "LK Ring"
+    pcs: 1
+    no_of_items: 1
+    gwt: 4.500
+    less_weight: "No"
+    other_metal: "No"
+    wastage: 10
+    mc_type: "Gram"
+    mc_type_raw: "2"
+    mc: 200
+    calc_type: "Mc on Gross,Wast On Net"
+    huid1: "DEF456"
+    button: "Add & Copy"
+    expected:
+      status: pass

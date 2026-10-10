@@ -1,0 +1,28 @@
+# Debit/Credit Entry test data
+module: debit_credit_entry
+data_version: 1
+
+test_cases:
+  - id: TC_DC_001
+    description: "Amount credit to supplier"
+    trans_in: "amount"
+    karigar: "Thirumala"
+    account_type: "supplier"
+    supplier_bill: ""
+    ledger_type: ""
+    amount: "5000"
+    trans_type: "credit"
+    narration: "Automation credit entry"
+    expected:
+      status: pass
+
+  - id: TC_DC_002
+    description: "Weight debit from smith"
+    trans_in: "weight"
+    karigar: "Thirumala"
+    account_type: "smith"
+    weight: "2.500"
+    trans_type: "debit"
+    narration: "Automation weight debit"
+    expected:
+      status: pass

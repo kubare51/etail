@@ -1,0 +1,38 @@
+# Smith Company Opening Balance test data
+module: smith_company_op_bal
+data_version: 1
+
+test_cases:
+  - id: TC_OB_001
+    description: "Metal ornament opening balance"
+    smith_type: "supplier"
+    bal_type: "metal"
+    metal_type: "oranment"
+    karigar: "Thirumala"
+    metal: "Gold"
+    category: "Necklace"
+    product: "Ring"
+    gross_wgt: "10.000"
+    net_wgt: "9.500"
+    pure_wgt: "8.750"
+    wt_type: "credit"
+    amount: "50000"
+    amt_type: "credit"
+    remark: "Automation ornament op bal"
+    expected:
+      status: pass
+
+  - id: TC_OB_002
+    description: "Old metal opening balance"
+    smith_type: "supplier"
+    bal_type: "metal"
+    metal_type: "old metal"
+    karigar: "Thirumala"
+    metal: "Gold"
+    category: "Old Gold"
+    gross_wgt: "5.000"
+    pure_wgt: "4.600"
+    wt_type: "debit"
+    remark: "Automation old metal op bal"
+    expected:
+      status: pass

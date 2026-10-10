@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline Dashboard — Logimax DevTools</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: #1a1f35;
+    --bg-card-hover: #1f2542;
+    --border: #2a3050;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --accent-green: #10b981;
+    --accent-yellow: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-cyan: #06b6d4;
+    --glow-blue: rgba(59, 130, 246, 0.15);
+    --glow-purple: rgba(139, 92, 246, 0.15);
+    --glow-green: rgba(16, 185, 129, 0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(59,130,246,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(139,92,246,0.04) 0%, transparent 50%);
+    z-index: 0;
+    animation: bgDrift 20s ease-in-out infinite alternate;
+}
+@keyframes bgDrift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-2%, -1%); }
+}
+
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; position: relative; z-index: 1; }
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+.header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+.header-meta {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.meta-badge {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.meta-badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+.btn-refresh {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.btn-refresh:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+}
+
+/* Phase Banner */
+.phase-banner {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+}
+.phase-banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan));
+}
+.phase-icon {
+    font-size: 48px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    flex-shrink: 0;
+}
+.phase-info { flex: 1; }
+.phase-info h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.phase-info .phase-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+.phase-progress-wrap { width: 200px; flex-shrink: 0; text-align: right; }
+.phase-progress-label { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+.phase-progress-bar {
+    height: 8px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.phase-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+}
+
+/* Grid */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all 0.3s ease;
+}
+.card:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+.card-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.card-title .icon { font-size: 16px; }
+
+/* Stat Cards */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+.stat-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Pipeline Stages */
+.pipeline-stages {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+}
+.pipeline-stage {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    border-radius: 10px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+.pipeline-stage.completed {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.pipeline-stage.active {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    animation: stageGlow 2s ease-in-out infinite;
+}
+.pipeline-stage.pending {
+    background: rgba(100, 116, 139, 0.05);
+    border: 1px solid transparent;
+    opacity: 0.5;
+}
+@keyframes stageGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.1); }
+    50% { box-shadow: 0 0 16px rgba(59, 130, 246, 0.2); }
+}
+.stage-icon { font-size: 24px; margin-bottom: 6px; }
+.stage-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.stage-connector {
+    width: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+/* File list */
+.file-list { max-height: 300px; overflow-y: auto; }
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    transition: background 0.2s;
+}
+.file-item:hover { background: var(--bg-card-hover); }
+.file-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.file-badge.modified { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+.file-badge.staged { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+.file-badge.new { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+.file-badge.deleted { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+
+/* Commit list */
+.commit-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(42, 48, 80, 0.5);
+    font-size: 13px;
+}
+.commit-item:last-child { border-bottom: none; }
+.commit-hash {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-blue);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+.commit-msg { flex: 1; color: var(--text-secondary); }
+.commit-time { color: var(--text-muted); font-size: 12px; flex-shrink: 0; }
+
+/* Hook and workflow badges */
+.badge-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+.badge:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+.badge.active { border-color: var(--accent-green); color: var(--accent-green); }
+
+/* Action buttons */
+.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.action-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.action-btn.primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    border: none;
+    color: white;
+}
+.action-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.3); }
+.action-btn.secondary {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+}
+.action-btn.secondary:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+
+/* Task list */
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+}
+.task-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+.task-check.done { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+.task-check.in_progress { background: rgba(245, 158, 11, 0.2); color: var(--accent-yellow); }
+.task-check.todo { background: rgba(100, 116, 139, 0.1); color: var(--text-muted); }
+
+/* Changeset card */
+.changeset-field {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(42, 48, 80, 0.3);
+    font-size: 13px;
+}
+.changeset-field:last-child { border-bottom: none; }
+.changeset-key { color: var(--text-muted); }
+.changeset-value { color: var(--text-primary); font-weight: 500; }
+
+/* Loading state */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    gap: 16px;
+}
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error state */
+.error-card {
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 14px;
+    padding: 32px;
+    text-align: center;
+}
+.error-card h3 { color: var(--accent-red); margin-bottom: 8px; }
+.error-card p { color: var(--text-secondary); font-size: 14px; }
+.error-card code {
+    display: block;
+    margin-top: 16px;
+    background: var(--bg-primary);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent-yellow);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline-stages { flex-wrap: wrap; }
+    .phase-banner { flex-direction: column; text-align: center; }
+    .phase-progress-wrap { width: 100%; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <span style="color: var(--text-muted)">Loading pipeline state...</span>
+    </div>
+</div>
+
+<script>
+const PHASE_MAP = {
+    'IDLE': { stages: [0,0,0,0,0,0] },
+    'REQUIREMENT': { stages: [2,0,0,0,0,0] },
+    'PLANNING': { stages: [1,2,0,0,0,0] },
+    'CODING': { stages: [1,1,2,0,0,0] },
+    'TESTING': { stages: [1,1,1,2,0,0] },
+    'READY_TO_COMMIT': { stages: [1,1,1,1,2,0] },
+    'PR_READY': { stages: [1,1,1,1,1,2] },
+    'MERGED': { stages: [1,1,1,1,1,1] }
+};
+
+async function loadState() {
+    try {
+        const resp = await fetch('./pipeline-state.json?t=' + Date.now());
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        return await resp.json();
+    } catch (e) {
+        return null;
+    }
+}
+
+function renderError() {
+    document.getElementById('app').innerHTML = `
+        <div class="header">
+            <h1>📊 Pipeline Dashboard</h1>
+        </div>
+        <div class="error-card">
+            <h3>No Pipeline State Found</h3>
+            <p>Run the state generator to create the dashboard data:</p>
+            <code>python logimax-devtools/docs/pipeline_dashboard.py</code>
+        </div>
+    `;
+}
+
+function renderDashboard(state) {
+    const phase = state.phase;
+    const git = state.git;
+    const cs = state.changeset;
+    const task = state.task;
+    const stageConfig = PHASE_MAP[phase.phase] || PHASE_MAP['IDLE'];
+    const stages = ['Requirement', 'Plan', 'Code', 'Review', 'Commit', 'Deploy'];
+    const stageIcons = ['📋', '📐', '💻', '🔍', '📦', '🚀'];
+
+    let html = `
+    <div class="header">
+        <h1>📊 Pipeline Dashboard</h1>
+        <div class="header-meta">
+            <div class="meta-badge"><div class="dot"></div> ${state.project_name}</div>
+            <div class="meta-badge">🕐 ${new Date(state.generated_at).toLocaleString()}</div>
+            <button class="btn-refresh" onclick="location.reload()">↻ Refresh</button>
+        </div>
+    </div>
+
+    <!-- Phase Banner -->
+    <div class="phase-banner">
+        <div class="phase-icon" style="background:${phase.color}22">${phase.icon}</div>
+        <div class="phase-info">
+            <h2 style="color:${phase.color}">${phase.label}</h2>
+            <div class="phase-desc">
+                ${cs.has_current ? `${cs.current.type}(${cs.current.module}): ${cs.current.summary}` : `Branch: ${git.branch}`}
+                ${cs.has_current && cs.current.ticket ? ` • ${cs.current.ticket}` : ''}
+            </div>
+        </div>
+        <div class="phase-progress-wrap">
+            <div class="phase-progress-label" style="color:${phase.color}">${state.progress}%</div>
+            <div class="phase-progress-bar">
+                <div class="phase-progress-fill" style="width:${state.progress}%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pipeline Stages -->
+    <div class="pipeline-stages">
+        ${stages.map((name, i) => {
+            const s = stageConfig.stages[i];
+            const cls = s === 1 ? 'completed' : s === 2 ? 'active' : 'pending';
+            const check = s === 1 ? '✓' : s === 2 ? '●' : '○';
+            return `
+                ${i > 0 ? '<div class="stage-connector">→</div>' : ''}
+                <div class="pipeline-stage ${cls}">
+                    <div class="stage-icon">${stageIcons[i]}</div>
+                    <div class="stage-name">${check} ${name}</div>
+                </div>
+            `;
+        }).join('')}
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-value" style="color:var(--accent-yellow)">${git.modified_count}</div>
+            <div class="stat-label">Modified</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color:var(--accent-green)">${git.staged_count}</div>
+            <div class="stat-label">Staged</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color:var(--accent-blue)">${git.untracked_count}</div>
+            <div class="stat-label">New Files</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color:var(--accent-cyan)">${git.ahead_of_origin}</div>
+            <div class="stat-label">Ahead of Origin</div>
+        </div>
+    </div>
+
+    <!-- Next Actions -->
+    ${state.next_actions.length > 0 ? `
+    <div class="card" style="margin-bottom:24px; background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));">
+        <div class="card-title"><span class="icon">⚡</span> Next Actions</div>
+        <div class="actions">
+            ${state.next_actions.map(a => `
+                <button class="action-btn ${a.type}" title="${a.command}">
+                    ${a.text}
+                    <span style="font-size:11px;opacity:0.7">${a.command}</span>
+                </button>
+            `).join('')}
+        </div>
+    </div>` : ''}
+
+    <div class="grid">
+        <!-- Git State -->
+        <div class="card">
+            <div class="card-title"><span class="icon">🔀</span> Git State</div>
+            <div class="changeset-field">
+                <span class="changeset-key">Branch</span>
+                <span class="changeset-value">${git.branch}</span>
+            </div>
+            <div class="changeset-field">
+                <span class="changeset-key">Type</span>
+                <span class="changeset-value" style="color:${git.branch_type === 'bugfix' ? 'var(--accent-red)' : git.branch_type === 'feature' ? 'var(--accent-green)' : 'var(--accent-yellow)'}">${git.branch_type}</span>
+            </div>
+            <div class="changeset-field">
+                <span class="changeset-key">Last Commit</span>
+                <span class="changeset-value">${git.last_commit.hash || 'N/A'}</span>
+            </div>
+            <div class="changeset-field">
+                <span class="changeset-key">Message</span>
+                <span class="changeset-value" style="font-size:12px">${(git.last_commit.message || '').slice(0, 50)}</span>
+            </div>
+            <div class="changeset-field">
+                <span class="changeset-key">When</span>
+                <span class="changeset-value">${git.last_commit.relative || 'N/A'}</span>
+            </div>
+        </div>
+
+        <!-- Changeset -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📝</span> Active Changeset</div>
+            ${cs.has_current ? `
+                <div class="changeset-field">
+                    <span class="changeset-key">Type</span>
+                    <span class="changeset-value">${cs.current.type}</span>
+                </div>
+                <div class="changeset-field">
+                    <span class="changeset-key">Module</span>
+                    <span class="changeset-value">${cs.current.module}</span>
+                </div>
+                <div class="changeset-field">
+                    <span class="changeset-key">Summary</span>
+                    <span class="changeset-value" style="font-size:12px">${cs.current.summary}</span>
+                </div>
+                <div class="changeset-field">
+                    <span class="changeset-key">Ticket</span>
+                    <span class="changeset-value">${cs.current.ticket || '—'}</span>
+                </div>
+                <div class="changeset-field">
+                    <span class="changeset-key">Status</span>
+                    <span class="changeset-value">${cs.current.status || 'planned'}</span>
+                </div>
+            ` : '<div style="color:var(--text-muted);text-align:center;padding:20px">No active changeset</div>'}
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Modified Files -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📁</span> Changed Files (${git.total_changes})</div>
+            <div class="file-list">
+                ${git.modified.map(f => `<div class="file-item"><span class="file-badge modified">M</span>${f}</div>`).join('')}
+                ${git.untracked.slice(0, 15).map(f => `<div class="file-item"><span class="file-badge new">NEW</span>${f}</div>`).join('')}
+                ${git.deleted.map(f => `<div class="file-item"><span class="file-badge deleted">D</span>${f}</div>`).join('')}
+                ${git.untracked.length > 15 ? `<div style="padding:8px 12px;color:var(--text-muted);font-size:12px">... and ${git.untracked.length - 15} more</div>` : ''}
+            </div>
+        </div>
+
+        <!-- Recent Commits -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📜</span> Recent Commits</div>
+            ${git.recent_commits.map(c => `
+                <div class="commit-item">
+                    <span class="commit-hash">${c.hash}</span>
+                    <span class="commit-msg">${c.message}</span>
+                    <span class="commit-time">${c.relative}</span>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Hooks -->
+        <div class="card">
+            <div class="card-title"><span class="icon">🪝</span> Git Hooks (${state.hooks.count})</div>
+            <div class="badge-list">
+                ${state.hooks.installed.map(h => `<div class="badge active">✓ ${h.name}</div>`).join('')}
+            </div>
+        </div>
+
+        <!-- CI Workflows -->
+        <div class="card">
+            <div class="card-title"><span class="icon">⚙️</span> CI Workflows (${state.ci.count})</div>
+            <div class="badge-list">
+                ${state.ci.workflows.map(w => `<div class="badge">${w.name}</div>`).join('')}
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Workflows -->
+    <div class="card">
+        <div class="card-title"><span class="icon">🤖</span> Agent Workflows (${state.workflows.count})</div>
+        <div class="badge-list">
+            ${state.workflows.workflows.map(w => `<div class="badge">/${w.name}</div>`).join('')}
+        </div>
+    </div>
+    `;
+
+    document.getElementById('app').innerHTML = html;
+}
+
+async function init() {
+    const state = await loadState();
+    if (state) {
+        renderDashboard(state);
+    } else {
+        renderError();
+    }
+}
+
+init();
+</script>
+</body>
+</html>

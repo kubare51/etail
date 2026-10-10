@@ -1,0 +1,4 @@
+<?php
+// Copy to api_keys.local.php (gitignored) and fill in real keys.
+putenv('OPENAI_API_KEY=');
+putenv('GEMINI_API_KEY=');

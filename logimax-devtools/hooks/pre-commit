@@ -1,0 +1,236 @@
+#!/bin/sh
+# ══════════════════════════════════════════════════════════════
+# Pre-commit Hook — eTail v3 / Logimax ERP
+# ══════════════════════════════════════════════════════════════
+# Runs before every commit. Checks STAGED content only.
+# Pure grep-based — no dependencies, runs in ~1 second.
+#
+# BLOCKERS (commit rejected):
+#   1. PHP syntax errors
+#   2. Raw $_GET/$_POST/$_REQUEST/$_COOKIE
+#   3. SQL injection (variable in raw query)
+#   4. XSS: echo $var in views without htmlspecialchars
+#   5. Destructive SQL without WHERE
+#   6. Unsafe functions (eval/exec/system/shell_exec)
+#   7. Merge conflict markers
+#   8. Hardcoded credentials/secrets
+#
+# WARNINGS (commit proceeds):
+#   9. Debug dumps (var_dump/print_r/dd)
+#  10. Bare die/exit without log_message
+#  11. SELECT * usage
+#  12. console.log in JS
+#  13. Hardcoded AJAX URLs
+#  14. N+1 query pattern (query inside loop)
+#  15. $.ajax without error handler
+#
+# Install:  logimax-devtools/install-hooks.sh
+# Bypass:   git commit --no-verify
+# ══════════════════════════════════════════════════════════════
+
+# Windows: delegate to PowerShell
+if command -v powershell.exe &> /dev/null; then
+    powershell.exe -ExecutionPolicy Bypass -File "$(dirname "$0")/pre-commit.ps1"
+    exit $?
+fi
+
+echo ""
+echo "  ╔══════════════════════════════════════════╗"
+echo "  ║  🔍 Pre-commit Quality Gate              ║"
+echo "  ╚══════════════════════════════════════════╝"
+echo ""
+
+STAGED_PHP=$(git diff --cached --name-only --diff-filter=ACM | grep '\.php$' || true)
+STAGED_JS=$(git diff --cached --name-only --diff-filter=ACM | grep '\.js$' | grep -v 'node_modules' | grep -v 'vendor' || true)
+
+ERRORS=0
+WARNINGS=0
+ERROR_DETAILS=""
+WARN_DETAILS=""
+
+add_error() {
+    ERRORS=$((ERRORS + 1))
+    ERROR_DETAILS="${ERROR_DETAILS}\n  ❌ $1: $2\n     → $3"
+}
+
+add_warning() {
+    WARNINGS=$((WARNINGS + 1))
+    WARN_DETAILS="${WARN_DETAILS}\n  ⚠️  $1: $2\n     → $3"
+}
+
+# ══════════════════════════════════════════════════════════════
+# UNIVERSAL CHECK: Merge conflict markers (any file type)
+# ══════════════════════════════════════════════════════════════
+ALL_STAGED=$(git diff --cached --name-only --diff-filter=ACM || true)
+if [ -n "$ALL_STAGED" ]; then
+    for file in $ALL_STAGED; do
+        [ ! -f "$file" ] && continue
+        CONFLICT=$(git diff --cached -- "$file" | grep '^+' | grep -v '^+++' | grep -P '^(\+)?(<<<<<<|======|>>>>>>)' || true)
+        if [ -n "$CONFLICT" ]; then
+            add_error "MERGE CONFLICT" "$file" "Resolve conflict markers before committing"
+        fi
+    done
+fi
+
+# ══════════════════════════════════════════════════════════════
+# PHP CHECKS
+# ══════════════════════════════════════════════════════════════
+if [ -n "$STAGED_PHP" ]; then
+    PHP_COUNT=$(echo "$STAGED_PHP" | wc -l | tr -d ' ')
+    echo "  📝 PHP files: $PHP_COUNT"
+
+    for file in $STAGED_PHP; do
+        [ ! -f "$file" ] && continue
+
+        STAGED_CONTENT=$(git diff --cached -- "$file" | grep '^+' | grep -v '^+++' || true)
+        [ -z "$STAGED_CONTENT" ] && continue
+
+        BASENAME=$(basename "$file")
+        IS_VIEW=0
+        echo "$file" | grep -q "views/" && IS_VIEW=1
+
+        # ── BLOCKER 1: PHP syntax ──
+        php -l "$file" > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            add_error "SYNTAX" "$BASENAME" "PHP parse error — fix syntax"
+        fi
+
+        # ── BLOCKER 2: Raw superglobals ──
+        if echo "$STAGED_CONTENT" | grep -qP '\$_(GET|POST|REQUEST|COOKIE)\s*\['; then
+            add_error "SECURITY" "$BASENAME" "Raw \$_GET/\$_POST — use \$this->input->post()"
+        fi
+
+        # ── BLOCKER 3: SQL injection ──
+        if echo "$STAGED_CONTENT" | grep -qP '\$this->db->query\s*\(\s*["\x27].*\$'; then
+            add_error "SQL INJECTION" "$BASENAME" "Variable in raw query — use query bindings"
+        fi
+
+        # ── BLOCKER 4: XSS in views ──
+        if [ $IS_VIEW -eq 1 ]; then
+            # echo $variable without htmlspecialchars in view files
+            XSS=$(echo "$STAGED_CONTENT" | grep -P 'echo\s+\$(?!this)' | grep -v 'htmlspecialchars' | grep -v 'json_encode' || true)
+            if [ -n "$XSS" ]; then
+                add_error "XSS RISK" "$BASENAME" "Unescaped echo in view — use htmlspecialchars(\$var)"
+            fi
+        fi
+
+        # ── BLOCKER 5: Destructive SQL without WHERE ──
+        if echo "$STAGED_CONTENT" | grep -qiP '(DELETE\s+FROM|TRUNCATE\s+(TABLE\s+)?)\w' ; then
+            # Check if there's a WHERE clause nearby
+            HAS_WHERE=$(echo "$STAGED_CONTENT" | grep -iP 'DELETE\s+FROM' | grep -i 'WHERE' || true)
+            TRUNCATE=$(echo "$STAGED_CONTENT" | grep -iP 'TRUNCATE' || true)
+            if [ -n "$TRUNCATE" ]; then
+                add_error "DESTRUCTIVE SQL" "$BASENAME" "TRUNCATE detected — requires explicit approval"
+            elif [ -z "$HAS_WHERE" ]; then
+                add_error "DESTRUCTIVE SQL" "$BASENAME" "DELETE without WHERE — will wipe entire table"
+            fi
+        fi
+
+        # ── BLOCKER 6: Unsafe functions ──
+        if echo "$STAGED_CONTENT" | grep -qP '\b(eval|exec|system|passthru|shell_exec|popen)\s*\('; then
+            FUNC=$(echo "$STAGED_CONTENT" | grep -oP '\b(eval|exec|system|passthru|shell_exec|popen)\s*\(' | head -1)
+            add_error "UNSAFE FUNCTION" "$BASENAME" "$FUNC — command injection risk"
+        fi
+
+        # ── BLOCKER 8: Hardcoded credentials ──
+        CRED=$(echo "$STAGED_CONTENT" | grep -iP "(password|secret|api_key|token|private_key)\s*[=:]\s*['\"][^'\"]{8,}" || true)
+        if [ -n "$CRED" ]; then
+            # Exclude config files, examples, and comments
+            if ! echo "$file" | grep -qP '(config|\.env|example|sample|test|migration)'; then
+                add_error "HARDCODED SECRET" "$BASENAME" "Possible credential in source — use config/env"
+            fi
+        fi
+
+        # ── WARNING 9: Debug dumps ──
+        if echo "$STAGED_CONTENT" | grep -qP '\b(var_dump|print_r|dd)\s*\('; then
+            add_warning "DEBUG CODE" "$BASENAME" "Remove var_dump()/print_r() before committing"
+        fi
+
+        # ── WARNING 10: Bare die/exit ──
+        if echo "$STAGED_CONTENT" | grep -P '\b(die|exit)\s*\(' | grep -qv 'log_message'; then
+            add_warning "BARE EXIT" "$BASENAME" "Add log_message() before die()/exit()"
+        fi
+
+        # ── WARNING 11: SELECT * ──
+        if echo "$STAGED_CONTENT" | grep -qiP "select\s+\*\s+from"; then
+            add_warning "SELECT *" "$BASENAME" "Specify exact columns needed"
+        fi
+
+        # ── WARNING 14: N+1 query pattern ──
+        # Detect: foreach/for/while followed by $this->db-> within 5 lines
+        N1_LOOP=$(echo "$STAGED_CONTENT" | grep -P '^\+\s*(foreach|for|while)\s*\(' || true)
+        N1_QUERY=$(echo "$STAGED_CONTENT" | grep -P '\$this->db->(get|query|where|select|insert|update|delete)' || true)
+        if [ -n "$N1_LOOP" ] && [ -n "$N1_QUERY" ]; then
+            add_warning "N+1 PATTERN" "$BASENAME" "Query inside loop — consider batch query with where_in()"
+        fi
+
+    done
+    echo ""
+fi
+
+# ══════════════════════════════════════════════════════════════
+# JAVASCRIPT CHECKS
+# ══════════════════════════════════════════════════════════════
+if [ -n "$STAGED_JS" ]; then
+    JS_COUNT=$(echo "$STAGED_JS" | wc -l | tr -d ' ')
+    echo "  📜 JS files: $JS_COUNT"
+
+    for file in $STAGED_JS; do
+        [ ! -f "$file" ] && continue
+        STAGED_CONTENT=$(git diff --cached -- "$file" | grep '^+' | grep -v '^+++' || true)
+        [ -z "$STAGED_CONTENT" ] && continue
+
+        BASENAME=$(basename "$file")
+
+        # ── WARNING 12: console.log ──
+        if echo "$STAGED_CONTENT" | grep -qP 'console\.(log|debug|info)\('; then
+            add_warning "CONSOLE.LOG" "$BASENAME" "Remove debug logging"
+        fi
+
+        # ── WARNING 13: Hardcoded AJAX URLs ──
+        if echo "$STAGED_CONTENT" | grep -qP "url:\s*['\"]/(admin|api)/"; then
+            add_warning "HARDCODED URL" "$BASENAME" "Use base_url variable"
+        fi
+
+        # ── WARNING 15: $.ajax without error handler ──
+        # Check if there's an $.ajax call without an error: callback
+        AJAX_CALLS=$(echo "$STAGED_CONTENT" | grep -c '\$\.ajax\s*(' || true)
+        AJAX_ERRORS=$(echo "$STAGED_CONTENT" | grep -c 'error\s*:' || true)
+        if [ "$AJAX_CALLS" -gt 0 ] && [ "$AJAX_ERRORS" -eq 0 ]; then
+            add_warning "AJAX NO ERROR" "$BASENAME" "Add error: handler to \$.ajax() calls"
+        fi
+    done
+    echo ""
+fi
+
+# ══════════════════════════════════════════════════════════════
+# RESULT
+# ══════════════════════════════════════════════════════════════
+echo "  ╔══════════════════════════════════════════╗"
+
+if [ $ERRORS -gt 0 ]; then
+    echo "  ║  ❌ BLOCKED: $ERRORS error(s), $WARNINGS warning(s)          ║"
+    echo "  ╚══════════════════════════════════════════╝"
+    echo ""
+    echo -e "$ERROR_DETAILS"
+    if [ $WARNINGS -gt 0 ]; then
+        echo ""
+        echo -e "$WARN_DETAILS"
+    fi
+    echo ""
+    echo "  Fix errors before committing."
+    echo "  Bypass (not recommended): git commit --no-verify"
+    echo ""
+    exit 1
+elif [ $WARNINGS -gt 0 ]; then
+    echo "  ║  ⚠️  PASSED: $WARNINGS warning(s)                     ║"
+    echo "  ╚══════════════════════════════════════════╝"
+    echo -e "$WARN_DETAILS"
+    echo ""
+    exit 0
+else
+    echo "  ║  ✅ All checks passed!                    ║"
+    echo "  ╚══════════════════════════════════════════╝"
+    echo ""
+    exit 0
+fi

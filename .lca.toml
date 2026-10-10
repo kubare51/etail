@@ -1,0 +1,38 @@
+# LCA Configuration
+# Place this file at your project root as .lca.toml
+
+[project]
+name = ""
+root = "."
+
+[health]
+complexity_weight = 0.30
+security_weight = 0.25
+dead_code_weight = 0.15
+n1_weight = 0.15
+hardcoded_weight = 0.10
+smell_weight = 0.05
+
+[health.thresholds]
+grade_a = 90
+grade_b = 75
+grade_c = 60
+grade_d = 40
+
+[scan]
+exclude_dirs = ["vendor", "node_modules", ".git", "tests", ".venv"]
+exclude_files = ["*.min.js", "*.map"]
+
+[hardcoded]
+# Known-safe hardcoded values to suppress (matched against finding text)
+whitelist = []
+
+[n1]
+# N+1 patterns to suppress
+whitelist = []
+
+[risk]
+churn_months = 3
+critical_threshold = 70
+high_threshold = 50
+medium_threshold = 30

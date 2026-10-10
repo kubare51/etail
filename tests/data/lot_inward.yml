@@ -1,0 +1,76 @@
+# Lot Inward test data
+module: lot_inward
+data_version: 1
+
+test_cases:
+  - id: TC_LOT_001
+    description: "Tagged lot inward — single product"
+    branch: "Main Branch"
+    smith: "Thirumala"
+    stock_type: "Tagged"
+    category: "Necklace"
+    purity: "91.6000"
+    product: "Ring"
+    design: "Kerala"
+    sub_design: "LK Ring"
+    pcs: 3
+    gwt: 15.500
+    lwt: "No"
+    other_metal: "No"
+    charge_name: ""
+    purchase_mc: 250
+    purchase_mc_type: "Gram"
+    purchase_wastage: 8
+    purchase_rate: 9500
+    purchase_rate_type: "Mc on Gross,Wast On Net"
+    metal_type: "Gold"
+    expected:
+      status: pass
+
+  - id: TC_LOT_002
+    description: "Non-tagged lot inward with section"
+    branch: "Main Branch"
+    smith: "Thirumala"
+    stock_type: "Non-Tagged"
+    category: "Necklace"
+    purity: "91.6000"
+    section: "GOLD"
+    product: "Necklace"
+    design: "Kerala"
+    sub_design: "LK Necklace"
+    pcs: 5
+    gwt: 50.000
+    lwt: "No"
+    other_metal: "No"
+    purchase_mc: 200
+    purchase_mc_type: "Gram"
+    purchase_wastage: 6
+    purchase_rate: 9500
+    purchase_rate_type: "Mc & Wast On Net"
+    expected:
+      status: pass
+
+  - id: TC_LOT_003
+    description: "Tagged lot with charges"
+    branch: "Main Branch"
+    smith: "Thirumala"
+    stock_type: "Tagged"
+    category: "Necklace"
+    purity: "91.6000"
+    product: "Bangles"
+    design: "Kerala"
+    sub_design: "LK Bangle"
+    pcs: 2
+    gwt: 20.000
+    lwt: "No"
+    other_metal: "No"
+    charge_name: "Hallmark Charges"
+    charge_type: "Per Pcs"
+    charge_value: 100
+    purchase_mc: 300
+    purchase_mc_type: "Piece"
+    purchase_wastage: 5
+    purchase_rate: 9500
+    purchase_rate_type: "Mc & Wast On Gross"
+    expected:
+      status: pass

@@ -1,0 +1,66 @@
+{
+  "description": "CI3 AJAX Endpoint Health Check Configuration",
+  "note": "These endpoints are tested with GET/POST requests to verify they respond with valid JSON",
+  "endpoints": [
+    {
+      "path": "/",
+      "method": "GET",
+      "expect": "html",
+      "description": "Login page loads"
+    },
+    {
+      "path": "/admin_ret_dashboard/ajax_dashboard_data",
+      "method": "POST",
+      "expect": "json",
+      "description": "Dashboard data endpoint"
+    },
+    {
+      "path": "/admin_ret_estimation/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Estimation list"
+    },
+    {
+      "path": "/admin_ret_billing/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Billing list"
+    },
+    {
+      "path": "/admin_payment/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Payment list"
+    },
+    {
+      "path": "/admin_ret_tagging/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Tagging list"
+    },
+    {
+      "path": "/admin_ret_purchase/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Purchase order list"
+    },
+    {
+      "path": "/admin_ret_reports/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Reports list"
+    },
+    {
+      "path": "/admin_customer/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Customer list"
+    },
+    {
+      "path": "/admin_settings/ajax_list",
+      "method": "GET",
+      "expect": "json",
+      "description": "Settings list"
+    }
+  ]
+}

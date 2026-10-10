@@ -1,0 +1,59 @@
+#!/bin/sh
+# ──────────────────────────────────────────────────────────────
+# pre-push hook — Prevents direct pushes to protected branches
+#
+# Protected branches:
+#   - PRODUCTION
+#   - support
+#   - QA
+#   - Retail_1.1.1.0001 (or any Retail_*)
+#
+# These branches should only receive changes via Pull Request.
+# Controlled by .githooks/config → PRE_PUSH=on|off
+# ──────────────────────────────────────────────────────────────
+
+# ── Config check ──────────────────────────────
+HOOKS_DIR="$(cd "$(dirname "$0")" && pwd)"
+CONFIG_FILE="$HOOKS_DIR/config"
+
+if [ -f "$CONFIG_FILE" ]; then
+    ENABLED=$(grep -E '^PRE_PUSH=' "$CONFIG_FILE" | cut -d= -f2 | tr -d ' \r')
+    if [ "$ENABLED" != "on" ]; then
+        exit 0
+    fi
+fi
+
+REMOTE="$1"
+URL="$2"
+
+# Protected branch patterns (case-sensitive)
+PROTECTED_BRANCHES="PRODUCTION|support|QA|Retail_"
+
+while read local_ref local_sha remote_ref remote_sha
+do
+    # Extract the branch name from refs/heads/<branch>
+    remote_branch=$(echo "$remote_ref" | sed 's|refs/heads/||')
+    
+    # Check if pushing to a protected branch
+    if echo "$remote_branch" | grep -qE "^($PROTECTED_BRANCHES)"; then
+        echo ""
+        echo "  🚫 PUSH BLOCKED — Protected branch: $remote_branch"
+        echo "  ─────────────────────────────────────────────────"
+        echo ""
+        echo "  You cannot push directly to '$remote_branch'."
+        echo "  This branch only accepts changes via Pull Request."
+        echo ""
+        echo "  What to do instead:"
+        echo "    1. Push to your feature/bugfix branch"
+        echo "    2. Create a PR:  /git-flow pr #ID to $remote_branch"
+        echo "    3. TL reviews and merges the PR"
+        echo ""
+        echo "  If you are a TL and need to force this push,"
+        echo "  use: git push --no-verify origin $remote_branch"
+        echo "  (Use with extreme caution!)"
+        echo ""
+        exit 1
+    fi
+done
+
+exit 0

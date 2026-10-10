@@ -1,0 +1,39 @@
+# GRN Entry test data
+module: grn_entry
+data_version: 1
+
+test_cases:
+  - id: TC_GRN_001
+    description: "Bill GRN — ornament purchase"
+    grn_type: "Bill"
+    karigar: "Thirumala"
+    ref_no: "AUTO-GRN-001"
+    purchase_type: "Local Purchase"
+    ref_date: "06-06-2026"
+    dispatch_through: "By Hand"
+    eway_bill: ""
+    category: "Necklace"
+    pcs: "1"
+    gross_wt: "10.500"
+    rate_per_gram: "6500"
+    rate_type: "Grm"
+    tds: "2"
+    cancel_reason: "Automation cancel test"
+    expected:
+      status: pass
+
+  - id: TC_GRN_002
+    description: "Receipt GRN — with wastage"
+    grn_type: "Receipt"
+    karigar: "Thirumala"
+    ref_no: "AUTO-GRN-002"
+    purchase_type: "Local Purchase"
+    ref_date: "06-06-2026"
+    dispatch_through: "By Hand"
+    category: "Ring"
+    pcs: "2"
+    gross_wt: "5.200"
+    wastage: "0.300"
+    rate_type: "Grm"
+    expected:
+      status: pass
